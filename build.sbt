@@ -8,6 +8,10 @@ scalaVersion := "2.10.4"
 
 licenses += ("MIT", url("http://opensource.org/licenses/MIT"))
 
+crossPaths := false
+
+autoScalaLibrary := false
+
 val akkaVersion = "2.2.4"
 
 libraryDependencies ++= Seq(
