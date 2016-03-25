@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+
+# Upload tagged releases to bintray
+if [ $TRAVIS_TAG ]; then
+	# Release to maven repository
+	mkdir -p ~/.bintray
+	cat <<END > ~/.bintray/.credentials
+realm = Bintray API Realm
+host = api.bintray.com
+user = petterarvidsson
+password = $bintray_api_key
+END
+	sbt publish
+fi
