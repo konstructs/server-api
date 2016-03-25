@@ -12,4 +12,12 @@ user = petterarvidsson
 password = $bintray_api_key
 END
 	sbt publish
+        mkdir -p $HOME/.aws
+	echo "[default]" > $HOME/.aws/credentials
+	echo "aws_access_key_id = ${AWS_S3_ACCESS_KEY_ID}" >> $HOME/.aws/credentials
+	echo "aws_secret_access_key = ${AWS_S3_SECRET_ACCESS_KEY}" >> $HOME/.aws/credentials
+	echo "[default]" > $HOME/.aws/config
+	echo "region = eu-west-1" >> $HOME/.aws/config
+
+	aws s3 sync target/api/ s3://doc.konstructs.org/server-api/ --acl public-read --delete
 fi

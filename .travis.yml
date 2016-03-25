@@ -10,6 +10,9 @@ notifications:
     on_failure: always  # options: [always|never|change] default: always
     on_start: always    # options: [always|never|change] default: always
 
+before_install:
+  - sudo pip install awscli
+
 script:
   - sbt test doc
   - ./publish
