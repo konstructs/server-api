@@ -1,9 +1,19 @@
 package konstructs.utils;
 
+/**
+ * DeterministicProductionRule is a class that defines a simple deterministic rule for an LSystem. If its
+ * predecessor is matched it stores a single successor to be used.
+ * @see LSystem
+ */
 public class DeterministicProductionRule extends ProductionRule {
     private final String predecessor;
     private final String successor;
 
+    /**
+     * Constructs a immutable DeterministicProductionRule
+     * @param predecessor The predecessor to be matched
+     * @param successor The successor to return
+     */
     public DeterministicProductionRule(String predecessor, String successor) {
         this.predecessor = predecessor;
         this.successor = successor;
@@ -14,6 +24,10 @@ public class DeterministicProductionRule extends ProductionRule {
         return predecessor;
     }
 
+    /**
+     * Get the successor of this rule
+     * @return The successor
+     */
     @Override
     public String getSuccessor() {
         return successor;
