@@ -6,6 +6,8 @@ package konstructs.api.messages;
  * overall behaviour of plugins and is informal.
  */
 public class GlobalConfig {
+    public final float DEFAULT_SIMULATION_SPEED = 1.0f;
+
     private final float simulationSpeed;
 
     /**
