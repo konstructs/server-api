@@ -143,7 +143,7 @@ public class BlockFilterNode extends BlockFilter {
                 && (shape == null || shape.equals(blockType.getShape()))
                 && (transparent == null || transparent.equals(blockType.isTransparent()))
                 && (obstacle == null || obstacle.equals(blockType.isObstacle()))
-                && (state == null) || state.equals(blockType.getState())
+                && (state == null || state.equals(blockType.getState()))
             );
     }
 
