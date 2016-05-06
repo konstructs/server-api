@@ -43,6 +43,12 @@ public abstract class KonstructsActor extends UntypedActorWithStash {
             return;
         }
 
+        if (message instanceof GlobalConfig) {
+            GlobalConfig config = (GlobalConfig)message;
+            onGlobalConfig(config);
+            return;
+        }
+
         unhandled(message);
     }
 
@@ -76,6 +82,14 @@ public abstract class KonstructsActor extends UntypedActorWithStash {
      */
     public void onBlockUpdateEvent(BlockUpdateEvent event) {
         unhandled(event);
+    }
+
+    /**
+     * This function is called when we receive a GlobalConfig message.
+     * @param config The GlobalConfig received
+     */
+    public void onGlobalConfig(GlobalConfig config) {
+        unhandled(config);
     }
 
     /**
