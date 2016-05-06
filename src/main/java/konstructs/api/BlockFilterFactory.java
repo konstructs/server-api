@@ -17,7 +17,7 @@ public class BlockFilterFactory {
     /**
      * The EVERYTHING BlockFilter matches everything.
      */
-    public static final BlockFilterNode EVERYTHING = new BlockFilterNode(null, null, null, null, null);
+    public static final BlockFilterNode EVERYTHING = new BlockFilterNode(null, null, null, null, null, null);
 
     /**
      * The EMPTY BlockFilter is an alias for the EVERYTHING BlockFilter
@@ -97,5 +97,14 @@ public class BlockFilterFactory {
      */
     public static BlockFilterNode withObstacle(Boolean obstacle) {
         return EMPTY.withObstacle(obstacle);
+    }
+
+    /**
+     * Factory method to create a new BlockFilter with the state property set
+     * @param state The state to be matched
+     * @return The new BlockFilter with the state property set
+     */
+    public static BlockFilterNode withState(String state) {
+        return EMPTY.withState(state);
     }
 }

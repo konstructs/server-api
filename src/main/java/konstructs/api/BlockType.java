@@ -13,10 +13,16 @@ public final class BlockType implements Serializable {
     public static final String SHAPE_BLOCK = "block";
     public static final String SHAPE_PLANT = "plant";
 
+    public static final String STATE_SOLID = "solid";
+    public static final String STATE_LIQUID = "liquid";
+    public static final String STATE_GAS = "gas";
+    public static final String STATE_PLASMA = "plasma";
+
     private final int[] faces;
     private final String shape;
     private final boolean obstacle;
     private final boolean transparent;
+    private final String state;
 
     /**
      * Constructs an immutable BlockType.
@@ -24,22 +30,54 @@ public final class BlockType implements Serializable {
      * @param shape the shape of the block
      * @param obstacle is this BlockType an obstacle?
      * @param transparent is this BlockType transparent?
-     * @see #getFaces
-     * @see #getShape
-     * @see #isObstacle
-     * @see #isTransparent
+     * @deprecated As of API version 0.1.3 (will be removed in 0.2.+)
+     *             Replaced by {@link #BlockType(int[], String, boolean, boolean, String)}.
+     *             This constructor always sets state to {@link #STATE_SOLID}
+     * @see #getFaces()
+     * @see #getShape()
+     * @see #isObstacle()
+     * @see #isTransparent()
      */
+    @Deprecated
     public BlockType(int[] faces, String shape, boolean obstacle, boolean transparent) {
-        if(!(shape.equals(BlockType.SHAPE_BLOCK) || shape.equals(BlockType.SHAPE_PLANT)))
+        this(faces, shape, obstacle,transparent, STATE_SOLID);
+    }
+
+    /**
+     * Constructs an immutable BlockType.
+     * @param faces the texture index for all faces of a BlockType
+     * @param shape the shape of the block
+     * @param obstacle is this BlockType an obstacle?
+     * @param transparent is this BlockType transparent?
+     * @param state the state of the block
+     * @see #getFaces()
+     * @see #getShape()
+     * @see #isObstacle()
+     * @see #isTransparent()
+     * @see #getState()
+     */
+    public BlockType(int[] faces, String shape, boolean obstacle, boolean transparent, String state) {
+        if(!(shape.equals(SHAPE_BLOCK) || shape.equals(SHAPE_PLANT)))
             throw new IllegalArgumentException("The shape must be either \"" +
-                                               BlockType.SHAPE_BLOCK +
-                                               "\" or \"" +
-                                               BlockType.SHAPE_PLANT +
-                                               "\"");
+                    SHAPE_BLOCK +
+                    "\" or \"" +
+                    SHAPE_PLANT +
+                    "\"");
+        if(!(state.equals(STATE_SOLID) || state.equals(STATE_LIQUID) || state.equals(STATE_GAS) || state.equals(STATE_PLASMA)))
+            throw new IllegalArgumentException("The state must be either \"" +
+                    STATE_SOLID +
+                    "\", \""  +
+                    STATE_LIQUID +
+                    "\", \"" +
+                    STATE_GAS +
+                    "\" or \"" +
+                    STATE_PLASMA +
+                    "\"");
         this.faces = faces;
         this.shape = shape;
         this.obstacle = obstacle;
         this.transparent = transparent;
+        this.state = state;
     }
 
     /**
@@ -80,14 +118,24 @@ public final class BlockType implements Serializable {
     }
 
     /**
+     * Returns the state of this block type. The state of the block
+     * can currently be {@link #STATE_SOLID}, {@link #STATE_LIQUID},
+     * {@link #STATE_GAS}, {@link #STATE_PLASMA}
+     * @return the state of this block type
+     */
+    public String getState() {
+        return state;
+    }
+
+    /**
      * Returns a copy with a new value for the faces
      * field.
      * @param faces the new value for faces
      * @return the copy
-     * @see #getFaces
+     * @see #getFaces()
      */
     public BlockType withFaces(int[] faces) {
-        return new BlockType(faces, shape, obstacle, transparent);
+        return new BlockType(faces, shape, obstacle, transparent, state);
     }
 
     /**
@@ -95,10 +143,10 @@ public final class BlockType implements Serializable {
      * field.
      * @param shape the new value for shape
      * @return the copy
-     * @see #getShape
+     * @see #getShape()
      */
     public BlockType withShape(String shape) {
-        return new BlockType(faces, shape, obstacle, transparent);
+        return new BlockType(faces, shape, obstacle, transparent, state);
     }
 
     /**
@@ -106,10 +154,10 @@ public final class BlockType implements Serializable {
      * field.
      * @param obstacle the new value for obstacle
      * @return the copy
-     * @see #isObstacle
+     * @see #isObstacle()
      */
     public BlockType withObstacle(boolean obstacle) {
-        return new BlockType(faces, shape, obstacle, transparent);
+        return new BlockType(faces, shape, obstacle, transparent, state);
     }
 
     /**
@@ -117,10 +165,21 @@ public final class BlockType implements Serializable {
      * field.
      * @param transparent the new value for transparent
      * @return the copy
-     * @see #isTransparent
+     * @see #isTransparent()
      */
     public BlockType withTransparent(boolean transparent) {
-        return new BlockType(faces, shape, obstacle, transparent);
+        return new BlockType(faces, shape, obstacle, transparent, state);
+    }
+
+    /**
+     * Returns a copy with a new value for the state
+     * field.
+     * @param state the new value for state
+     * @return the copy
+     * @see #getState()
+     */
+    public BlockType withState(String state) {
+        return new BlockType(faces, shape, obstacle, transparent, state);
     }
 
     @Override
@@ -133,7 +192,8 @@ public final class BlockType implements Serializable {
         if (obstacle != blockType.obstacle) return false;
         if (transparent != blockType.transparent) return false;
         if (!Arrays.equals(faces, blockType.faces)) return false;
-        return shape.equals(blockType.shape);
+        if (!shape.equals(blockType.shape)) return false;
+        return state.equals(blockType.state);
 
     }
 
@@ -143,6 +203,7 @@ public final class BlockType implements Serializable {
         result = 31 * result + shape.hashCode();
         result = 31 * result + (obstacle ? 1 : 0);
         result = 31 * result + (transparent ? 1 : 0);
+        result = 31 * result + state.hashCode();
         return result;
     }
 
@@ -153,6 +214,7 @@ public final class BlockType implements Serializable {
                 ", shape='" + shape + '\'' +
                 ", obstacle=" + obstacle +
                 ", transparent=" + transparent +
+                ", state='" + state + '\'' +
                 ')';
     }
 }
