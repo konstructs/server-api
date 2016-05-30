@@ -10,12 +10,46 @@ import java.util.Arrays;
  * and serializable.
  */
 public final class BlockType implements Serializable {
+    /**
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+)
+     *             Use {@link BlockShape#BLOCK} instead
+     */
+    @Deprecated
     public static final String SHAPE_BLOCK = BlockShape.BLOCK.getShape();
+
+    /**
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+)
+     *             Use {@link BlockShape#PLANT} instead
+     */
+    @Deprecated
     public static final String SHAPE_PLANT = BlockShape.PLANT.getShape();
 
+    /**
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+)
+     *             Use {@link BlockState#SOLID} instead
+     */
+    @Deprecated
     public static final String STATE_SOLID = BlockState.SOLID.getState();
+
+    /**
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+)
+     *             Use {@link BlockState#LIQUID} instead
+     */
+    @Deprecated
     public static final String STATE_LIQUID = BlockState.LIQUID.getState();
+
+    /**
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+)
+     *             Use {@link BlockState#GAS} instead
+     */
+    @Deprecated
     public static final String STATE_GAS = BlockState.GAS.getState();
+
+    /**
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+)
+     *             Use {@link BlockState#PLASMA} instead
+     */
+    @Deprecated
     public static final String STATE_PLASMA = BlockState.PLASMA.getState();
 
     private final int[] faces;
