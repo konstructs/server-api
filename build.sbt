@@ -14,6 +14,8 @@ autoScalaLibrary := false
 
 val akkaVersion = "2.2.4"
 
+javacOptions ++= Seq( "-Xlint:deprecation" )
+
 libraryDependencies ++= Seq(
   "com.typesafe.akka"      %% "akka-actor"    % akkaVersion,
   "com.google.code.gson"   %  "gson"          % "2.6.2"

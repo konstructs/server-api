@@ -17,7 +17,7 @@ public class BlockFilterFactory {
     /**
      * The EVERYTHING BlockFilter matches everything.
      */
-    public static final BlockFilterNode EVERYTHING = new BlockFilterNode(null, null, null, null, null, null);
+    public static final BlockFilterNode EVERYTHING = new BlockFilterNode();
 
     /**
      * The EMPTY BlockFilter is an alias for the EVERYTHING BlockFilter
@@ -75,10 +75,22 @@ public class BlockFilterFactory {
     /**
      * Factory method to create a BlockFilter with the given shape
      * @param shape The shape to set in the new BlockFilter
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+).
+     *             Use {@link BlockFilterFactory#withBlockShape(BlockShape)} instead
      * @return The new BlockFilter with the shape set
      */
+    @Deprecated
     public static BlockFilterNode withShape(String shape) {
-        return EMPTY.withShape(shape);
+        return EMPTY.withBlockShape(BlockShape.fromString(shape));
+    }
+
+    /**
+     * Factory method to create a BlockFilter with the given shape
+     * @param shape The shape to set in the new BlockFilter
+     * @return The new BlockFilter with the shape set
+     */
+    public static BlockFilterNode withBlockShape(BlockShape shape) {
+        return EMPTY.withBlockShape(shape);
     }
 
     /**
@@ -102,9 +114,21 @@ public class BlockFilterFactory {
     /**
      * Factory method to create a new BlockFilter with the state property set
      * @param state The state to be matched
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+).
+     *             Use {@link BlockFilterFactory#withBlockState(BlockState)} instead
      * @return The new BlockFilter with the state property set
      */
+    @Deprecated
     public static BlockFilterNode withState(String state) {
-        return EMPTY.withState(state);
+        return EMPTY.withBlockState(BlockState.fromString(state));
+    }
+
+    /**
+     * Factory method to create a new BlockFilter with the state property set
+     * @param state The state to be matched
+     * @return The new BlockFilter with the state property set
+     */
+    public static BlockFilterNode withBlockState(BlockState state) {
+        return EMPTY.withBlockState(state);
     }
 }

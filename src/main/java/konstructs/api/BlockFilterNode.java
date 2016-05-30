@@ -18,10 +18,10 @@ package konstructs.api;
 public class BlockFilterNode extends BlockFilter {
     private final String namespace;
     private final String name;
-    private final String shape;
+    private final BlockShape shape;
     private final Boolean transparent;
     private final Boolean obstacle;
-    private final String state;
+    private final BlockState state;
 
     /**
      * Constructs an immutable BlockFilterNode. All parameters may be
@@ -59,10 +59,38 @@ public class BlockFilterNode extends BlockFilter {
      * @param shape The shape of the BlockType
      * @param transparent Is the BlockType transparent?
      * @param obstacle Is the BlockType an obstacle?
-     * @param state The state ofthis block
+     * @param state The state of this block
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+).
+     * Use {@link #BlockFilterNode(String, String, BlockShape, Boolean, Boolean, BlockState)} instead
      * @see BlockFilterFactory
      */
+    @Deprecated
     public BlockFilterNode(String namespace, String name, String shape, Boolean transparent, Boolean obstacle, String state) {
+        this.namespace = namespace;
+        this.name = name;
+        this.shape = shape != null ? BlockShape.fromString(shape) : null;
+        this.transparent = transparent;
+        this.obstacle = obstacle;
+        this.state = state != null ? BlockState.fromString(state) : null;
+    }
+
+    /**
+     * Constructs an immutable BlockFilterNode. All parameters may be
+     * null (i.e. unset).
+     * <p>
+     *     Note: The easiest way to create a BlockFilter is to use the
+     *     BlockFilterFactory!
+     * </p>
+     *
+     * @param namespace The namespace of the BlockTypeId
+     * @param name The names of the BlockTypeId
+     * @param shape The shape of the BlockType
+     * @param transparent Is the BlockType transparent?
+     * @param obstacle Is the BlockType an obstacle?
+     * @param state The state of this block
+     * @see BlockFilterFactory
+     */
+    public BlockFilterNode(String namespace, String name, BlockShape shape, Boolean transparent, Boolean obstacle, BlockState state) {
         this.namespace = namespace;
         this.name = name;
         this.shape = shape;
@@ -71,6 +99,17 @@ public class BlockFilterNode extends BlockFilter {
         this.state = state;
     }
 
+    /*
+     * Creates an empty block filter that matches everything
+     */
+    BlockFilterNode() {
+        this.namespace = null;
+        this.name = null;
+        this.shape = null;
+        this.transparent = null;
+        this.obstacle = null;
+        this.state = null;
+    }
     /**
      * Create a new BlockFilterNode with the specific namespace set
      * @param namespace The namespace to set
@@ -103,9 +142,21 @@ public class BlockFilterNode extends BlockFilter {
     /**
      * Create a new BlockFilterNode with the specific shape set
      * @param shape The shape to set
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+).
+     *             Use {@link #withBlockShape(BlockShape)} instead
      * @return The new BlockFilterNode with the shape set
      */
+    @Deprecated
     public BlockFilterNode withShape(String shape) {
+        return new BlockFilterNode(namespace, name, BlockShape.fromString(shape), transparent, obstacle, state);
+    }
+
+    /**
+     * Create a new BlockFilterNode with the specific shape set
+     * @param shape The shape to set
+     * @return The new BlockFilterNode with the shape set
+     */
+    public BlockFilterNode withBlockShape(BlockShape shape) {
         return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state);
     }
 
@@ -130,9 +181,21 @@ public class BlockFilterNode extends BlockFilter {
     /**
      * Create a new BlockFilterNode with the state property set
      * @param state The state to be matched
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+).
+     *             Use {@link #withBlockState(BlockState)} instead
      * @return The new BlockFilterNode with the state property set
      */
+    @Deprecated
     public BlockFilterNode withState(String state) {
+        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, BlockState.fromString(state));
+    }
+
+    /**
+     * Create a new BlockFilterNode with the state property set
+     * @param state The state to be matched
+     * @return The new BlockFilterNode with the state property set
+     */
+    public BlockFilterNode withBlockState(BlockState state) {
         return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state);
     }
 
@@ -140,10 +203,10 @@ public class BlockFilterNode extends BlockFilter {
     public boolean matches(BlockTypeId blockTypeId, BlockType blockType) {
         return ((namespace == null || namespace.equals(blockTypeId.getNamespace()))
                 && (name == null || name.equals(blockTypeId.getName()))
-                && (shape == null || shape.equals(blockType.getShape()))
+                && (shape == null || shape.equals(blockType.getBlockShape()))
                 && (transparent == null || transparent.equals(blockType.isTransparent()))
                 && (obstacle == null || obstacle.equals(blockType.isObstacle()))
-                && (state == null || state.equals(blockType.getState()))
+                && (state == null || state.equals(blockType.getBlockState()))
             );
     }
 
