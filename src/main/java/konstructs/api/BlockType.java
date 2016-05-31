@@ -10,19 +10,53 @@ import java.util.Arrays;
  * and serializable.
  */
 public final class BlockType implements Serializable {
-    public static final String SHAPE_BLOCK = "block";
-    public static final String SHAPE_PLANT = "plant";
+    /**
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+)
+     *             Use {@link BlockShape#BLOCK} instead
+     */
+    @Deprecated
+    public static final String SHAPE_BLOCK = BlockShape.BLOCK.getShape();
 
-    public static final String STATE_SOLID = "solid";
-    public static final String STATE_LIQUID = "liquid";
-    public static final String STATE_GAS = "gas";
-    public static final String STATE_PLASMA = "plasma";
+    /**
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+)
+     *             Use {@link BlockShape#PLANT} instead
+     */
+    @Deprecated
+    public static final String SHAPE_PLANT = BlockShape.PLANT.getShape();
+
+    /**
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+)
+     *             Use {@link BlockState#SOLID} instead
+     */
+    @Deprecated
+    public static final String STATE_SOLID = BlockState.SOLID.getState();
+
+    /**
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+)
+     *             Use {@link BlockState#LIQUID} instead
+     */
+    @Deprecated
+    public static final String STATE_LIQUID = BlockState.LIQUID.getState();
+
+    /**
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+)
+     *             Use {@link BlockState#GAS} instead
+     */
+    @Deprecated
+    public static final String STATE_GAS = BlockState.GAS.getState();
+
+    /**
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+)
+     *             Use {@link BlockState#PLASMA} instead
+     */
+    @Deprecated
+    public static final String STATE_PLASMA = BlockState.PLASMA.getState();
 
     private final int[] faces;
-    private final String shape;
+    private final BlockShape blockShape;
     private final boolean obstacle;
     private final boolean transparent;
-    private final String state;
+    private final BlockState blockState;
 
     /**
      * Constructs an immutable BlockType.
@@ -40,7 +74,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType(int[] faces, String shape, boolean obstacle, boolean transparent) {
-        this(faces, shape, obstacle,transparent, STATE_SOLID);
+        this(faces, BlockShape.fromString(shape), obstacle,transparent, BlockState.SOLID);
     }
 
     /**
@@ -50,34 +84,25 @@ public final class BlockType implements Serializable {
      * @param obstacle is this BlockType an obstacle?
      * @param transparent is this BlockType transparent?
      * @param state the state of the block
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+)
+     *             Replaced by {@link #BlockType(int[], BlockShape, boolean, boolean, BlockState)}
      * @see #getFaces()
      * @see #getShape()
      * @see #isObstacle()
      * @see #isTransparent()
      * @see #getState()
      */
+    @Deprecated
     public BlockType(int[] faces, String shape, boolean obstacle, boolean transparent, String state) {
-        if(!(shape.equals(SHAPE_BLOCK) || shape.equals(SHAPE_PLANT)))
-            throw new IllegalArgumentException("The shape must be either \"" +
-                    SHAPE_BLOCK +
-                    "\" or \"" +
-                    SHAPE_PLANT +
-                    "\"");
-        if(!(state.equals(STATE_SOLID) || state.equals(STATE_LIQUID) || state.equals(STATE_GAS) || state.equals(STATE_PLASMA)))
-            throw new IllegalArgumentException("The state must be either \"" +
-                    STATE_SOLID +
-                    "\", \""  +
-                    STATE_LIQUID +
-                    "\", \"" +
-                    STATE_GAS +
-                    "\" or \"" +
-                    STATE_PLASMA +
-                    "\"");
+        this(faces, BlockShape.fromString(shape), obstacle, transparent, BlockState.fromString(state));
+    }
+
+    public BlockType(int[] faces, BlockShape shape, boolean obstacle, boolean transparent, BlockState state) {
         this.faces = faces;
-        this.shape = shape;
+        this.blockShape = shape;
         this.obstacle = obstacle;
         this.transparent = transparent;
-        this.state = state;
+        this.blockState = state;
     }
 
     /**
@@ -94,10 +119,20 @@ public final class BlockType implements Serializable {
      * Returns the shape of this block type. The shape of the block can
      * currently only be either of <code>BlockType.SHAPE_BLOCK</code> or
      * <code>BlockType.SHAPE_PLANT</code>.
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+). Use {@link #getBlockShape()} instead.
      * @return the shape of the block
      */
+    @Deprecated
     public String getShape() {
-        return shape;
+        return blockShape.getShape();
+    }
+
+    /**
+     * Returns the shape of this block type.
+     * @return the shape of the block
+     */
+    public BlockShape getBlockShape() {
+        return blockShape;
     }
 
     /**
@@ -121,10 +156,20 @@ public final class BlockType implements Serializable {
      * Returns the state of this block type. The state of the block
      * can currently be {@link #STATE_SOLID}, {@link #STATE_LIQUID},
      * {@link #STATE_GAS}, {@link #STATE_PLASMA}
+     * @deprecated As of API 0.1.7 (will be removed in 0.2.+). Use {@link #getBlockState()} instead.
      * @return the state of this block type
      */
+    @Deprecated
     public String getState() {
-        return state;
+        return blockState.getState();
+    }
+
+    /**
+     * Returns the state of this block type.
+     * @return the state of this block type
+     */
+    public BlockState getBlockState() {
+        return blockState;
     }
 
     /**
@@ -135,7 +180,20 @@ public final class BlockType implements Serializable {
      * @see #getFaces()
      */
     public BlockType withFaces(int[] faces) {
-        return new BlockType(faces, shape, obstacle, transparent, state);
+        return new BlockType(faces, blockShape, obstacle, transparent, blockState);
+    }
+
+    /**
+     * Returns a copy with a new value for the shape
+     * field.
+     * @param shape the new value for shape
+     * @deprecated As of 0.1.7 (will be removed in 0.2.+). Use {@link #withBlockShape(BlockShape)} instead.
+     * @return the copy
+     * @see #getShape()
+     */
+    @Deprecated
+    public BlockType withShape(String shape) {
+        return new BlockType(faces, BlockShape.fromString(shape), obstacle, transparent, blockState);
     }
 
     /**
@@ -143,10 +201,10 @@ public final class BlockType implements Serializable {
      * field.
      * @param shape the new value for shape
      * @return the copy
-     * @see #getShape()
+     * @see #getBlockShape()
      */
-    public BlockType withShape(String shape) {
-        return new BlockType(faces, shape, obstacle, transparent, state);
+    public BlockType withBlockShape(BlockShape shape) {
+        return new BlockType(faces, shape, obstacle, transparent, blockState);
     }
 
     /**
@@ -157,7 +215,7 @@ public final class BlockType implements Serializable {
      * @see #isObstacle()
      */
     public BlockType withObstacle(boolean obstacle) {
-        return new BlockType(faces, shape, obstacle, transparent, state);
+        return new BlockType(faces, blockShape, obstacle, transparent, blockState);
     }
 
     /**
@@ -168,7 +226,20 @@ public final class BlockType implements Serializable {
      * @see #isTransparent()
      */
     public BlockType withTransparent(boolean transparent) {
-        return new BlockType(faces, shape, obstacle, transparent, state);
+        return new BlockType(faces, blockShape, obstacle, transparent, blockState);
+    }
+
+    /**
+     * Returns a copy with a new value for the state
+     * field.
+     * @param state the new value for state
+     * @deprecated As of 0.1.7 (will be removed in 0.2.+). Use {@link #withBlockState(BlockState)} instead.
+     * @return the copy
+     * @see #getState()
+     */
+    @Deprecated
+    public BlockType withState(String state) {
+        return new BlockType(faces, blockShape, obstacle, transparent, BlockState.fromString(state));
     }
 
     /**
@@ -176,10 +247,10 @@ public final class BlockType implements Serializable {
      * field.
      * @param state the new value for state
      * @return the copy
-     * @see #getState()
+     * @see #getBlockState()
      */
-    public BlockType withState(String state) {
-        return new BlockType(faces, shape, obstacle, transparent, state);
+    public BlockType withBlockState(BlockState state) {
+        return new BlockType(faces, blockShape, obstacle, transparent, state);
     }
 
     @Override
@@ -192,18 +263,18 @@ public final class BlockType implements Serializable {
         if (obstacle != blockType.obstacle) return false;
         if (transparent != blockType.transparent) return false;
         if (!Arrays.equals(faces, blockType.faces)) return false;
-        if (!shape.equals(blockType.shape)) return false;
-        return state.equals(blockType.state);
+        if (!blockShape.equals(blockType.blockShape)) return false;
+        return blockState.equals(blockType.blockState);
 
     }
 
     @Override
     public int hashCode() {
         int result = Arrays.hashCode(faces);
-        result = 31 * result + shape.hashCode();
+        result = 31 * result + blockShape.hashCode();
         result = 31 * result + (obstacle ? 1 : 0);
         result = 31 * result + (transparent ? 1 : 0);
-        result = 31 * result + state.hashCode();
+        result = 31 * result + blockState.hashCode();
         return result;
     }
 
@@ -211,10 +282,10 @@ public final class BlockType implements Serializable {
     public String toString() {
         return "BlockType(" +
                 "faces=" + Arrays.toString(faces) +
-                ", shape='" + shape + '\'' +
+                ", blockShape=" + blockShape +
                 ", obstacle=" + obstacle +
                 ", transparent=" + transparent +
-                ", state='" + state + '\'' +
+                ", blockState=" + blockState +
                 ')';
     }
 }
