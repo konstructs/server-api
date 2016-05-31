@@ -13,7 +13,8 @@ import java.io.Serializable;
  * "your.domain" or "steampunk/metal" where "steampunk" is the name of
  * your unique plugin. Since the <code>name</code> is always prefixed
  * by <code>namespace</code> it must only be unique within your
- * plugins namespace. It is immutable and serializable.
+ * plugins namespace. The name of a block type always begins with
+ * a lower case letter. It is immutable and serializable.
  */
 public final class BlockTypeId implements Serializable {
     public final static BlockTypeId VACUUM = new BlockTypeId("org/konstructs", "vacuum");
@@ -22,7 +23,8 @@ public final class BlockTypeId implements Serializable {
      * Create a new immutable BlockTypeId from a name string. A name
      * string consist of the namespace appended with a / and then the
      * name, e.g. namespace "org/konstructs" and name "grass" would
-     * become "org/kosntructs/grass".
+     * become "org/konstructs/grass". The name of a block type always
+     * begins with a lower case letter.
      * @param id the block id to be parsed for
      * @return a new immutable BlockTypeId
      */
@@ -38,10 +40,16 @@ public final class BlockTypeId implements Serializable {
     /**
      * Constructs an immutable BlockTypeId.
      * @param namespace the namespace of this BlockTypeId
-     * @param name the name of this BlockTypeId
+     * @param name the name of this BlockTypeId, must begin with a lower case letter
      * @see BlockTypeId
      */
     public BlockTypeId(String namespace, String name) {
+        if(name.length() == 0 || namespace.length() == 0) {
+            throw new IllegalArgumentException("Name and namespace must not be empty string");
+        }
+        if(!Character.isLowerCase(name.charAt(0))) {
+            throw new IllegalArgumentException("First character of block type name must be lower case");
+        }
         this.namespace = namespace;
         this.name = name;
     }

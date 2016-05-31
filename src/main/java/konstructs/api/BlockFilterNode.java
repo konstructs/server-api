@@ -1,5 +1,7 @@
 package konstructs.api;
 
+import java.util.Arrays;
+
 /**
  * BlockFilterNode is a BlockFilter that is used to aggregate a
  * set of properties of a block that needs to be matched. Each
@@ -22,6 +24,7 @@ public class BlockFilterNode extends BlockFilter {
     private final Boolean transparent;
     private final Boolean obstacle;
     private final BlockState state;
+    private final BlockClassId[] classes;
 
     /**
      * Constructs an immutable BlockFilterNode. All parameters may be
@@ -61,7 +64,7 @@ public class BlockFilterNode extends BlockFilter {
      * @param obstacle Is the BlockType an obstacle?
      * @param state The state of this block
      * @deprecated As of API 0.1.7 (will be removed in 0.2.+).
-     * Use {@link #BlockFilterNode(String, String, BlockShape, Boolean, Boolean, BlockState)} instead
+     * Use {@link #BlockFilterNode(String, String, BlockShape, Boolean, Boolean, BlockState, BlockClassId[])} instead
      * @see BlockFilterFactory
      */
     @Deprecated
@@ -72,6 +75,7 @@ public class BlockFilterNode extends BlockFilter {
         this.transparent = transparent;
         this.obstacle = obstacle;
         this.state = state != null ? BlockState.fromString(state) : null;
+        this.classes = BlockType.NO_CLASSES;
     }
 
     /**
@@ -87,16 +91,19 @@ public class BlockFilterNode extends BlockFilter {
      * @param shape The shape of the BlockType
      * @param transparent Is the BlockType transparent?
      * @param obstacle Is the BlockType an obstacle?
-     * @param state The state of this block
+     * @param state The state of the BlockType
+     * @param classes The classes of the BlockType
      * @see BlockFilterFactory
      */
-    public BlockFilterNode(String namespace, String name, BlockShape shape, Boolean transparent, Boolean obstacle, BlockState state) {
+    public BlockFilterNode(String namespace, String name, BlockShape shape, Boolean transparent, Boolean obstacle, BlockState state,
+        BlockClassId[] classes) {
         this.namespace = namespace;
         this.name = name;
         this.shape = shape;
         this.transparent = transparent;
         this.obstacle = obstacle;
         this.state = state;
+        this.classes = classes;
     }
 
     /*
@@ -109,6 +116,7 @@ public class BlockFilterNode extends BlockFilter {
         this.transparent = null;
         this.obstacle = null;
         this.state = null;
+        this.classes = null;
     }
     /**
      * Create a new BlockFilterNode with the specific namespace set
@@ -116,7 +124,7 @@ public class BlockFilterNode extends BlockFilter {
      * @return The new BlockFilterNode with the namespace set
      */
     public BlockFilterNode withNamespace(String namespace) {
-        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state);
+        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state, classes);
     }
 
     /**
@@ -125,7 +133,7 @@ public class BlockFilterNode extends BlockFilter {
      * @return The new BlockFilterNode with name set
      */
     public BlockFilterNode withName(String name) {
-        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state);
+        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state, classes);
     }
 
     /**
@@ -148,7 +156,7 @@ public class BlockFilterNode extends BlockFilter {
      */
     @Deprecated
     public BlockFilterNode withShape(String shape) {
-        return new BlockFilterNode(namespace, name, BlockShape.fromString(shape), transparent, obstacle, state);
+        return new BlockFilterNode(namespace, name, BlockShape.fromString(shape), transparent, obstacle, state, classes);
     }
 
     /**
@@ -157,7 +165,7 @@ public class BlockFilterNode extends BlockFilter {
      * @return The new BlockFilterNode with the shape set
      */
     public BlockFilterNode withBlockShape(BlockShape shape) {
-        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state);
+        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state, classes);
     }
 
     /**
@@ -166,7 +174,7 @@ public class BlockFilterNode extends BlockFilter {
      * @return The new BlockFilterNode with the transparent property set
      */
     public BlockFilterNode withTransparent(Boolean transparent) {
-        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state);
+        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state, classes);
     }
 
     /**
@@ -175,7 +183,7 @@ public class BlockFilterNode extends BlockFilter {
      * @return The new BlockFilterNode with the obstacle property set
      */
     public BlockFilterNode withObstacle(Boolean obstacle) {
-        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state);
+        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state, classes);
     }
 
     /**
@@ -187,7 +195,7 @@ public class BlockFilterNode extends BlockFilter {
      */
     @Deprecated
     public BlockFilterNode withState(String state) {
-        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, BlockState.fromString(state));
+        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, BlockState.fromString(state), classes);
     }
 
     /**
@@ -196,7 +204,29 @@ public class BlockFilterNode extends BlockFilter {
      * @return The new BlockFilterNode with the state property set
      */
     public BlockFilterNode withBlockState(BlockState state) {
-        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state);
+        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state, classes);
+    }
+
+    /**
+     * Create a new BlockFilterNode with the classes property set
+     * @param classes The classes to be matched
+     * @return The new BlockFilterNode with the classes property set
+     */
+    public BlockFilterNode withClasses(BlockClassId[] classes) {
+        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state, classes);
+    }
+
+    /**
+     * Create a new BlockFilterNode with a single class added to its array of
+     * classes. Each time this method is called the array is extended. It can
+     * therefore be called several times.
+     * @param clazz the class to be added to the array of classes to be matched
+     * @return The new BlockFilterNode with the class added to the array
+     */
+    public  BlockFilterNode withClassAdded(BlockClassId clazz) {
+        BlockClassId[] newClasses = Arrays.copyOf(classes, classes.length + 1);
+        newClasses[classes.length] = clazz;
+        return new BlockFilterNode(namespace, name, shape, transparent, obstacle, state, newClasses);
     }
 
     @Override
@@ -207,8 +237,10 @@ public class BlockFilterNode extends BlockFilter {
                 && (transparent == null || transparent.equals(blockType.isTransparent()))
                 && (obstacle == null || obstacle.equals(blockType.isObstacle()))
                 && (state == null || state.equals(blockType.getBlockState()))
+                && (classes == null || blockType.hasClasses(classes))
             );
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -222,7 +254,9 @@ public class BlockFilterNode extends BlockFilter {
         if (shape != null ? !shape.equals(that.shape) : that.shape != null) return false;
         if (transparent != null ? !transparent.equals(that.transparent) : that.transparent != null) return false;
         if (obstacle != null ? !obstacle.equals(that.obstacle) : that.obstacle != null) return false;
-        return state != null ? state.equals(that.state) : that.state == null;
+        if (state != null ? !state.equals(that.state) : that.state != null) return false;
+
+        return Arrays.equals(classes, that.classes);
 
     }
 
@@ -234,6 +268,7 @@ public class BlockFilterNode extends BlockFilter {
         result = 31 * result + (transparent != null ? transparent.hashCode() : 0);
         result = 31 * result + (obstacle != null ? obstacle.hashCode() : 0);
         result = 31 * result + (state != null ? state.hashCode() : 0);
+        result = 31 * result + Arrays.hashCode(classes);
         return result;
     }
 
@@ -242,10 +277,11 @@ public class BlockFilterNode extends BlockFilter {
         return "BlockFilterNode(" +
                 "namespace='" + namespace + '\'' +
                 ", name='" + name + '\'' +
-                ", shape='" + shape + '\'' +
+                ", shape=" + shape +
                 ", transparent=" + transparent +
                 ", obstacle=" + obstacle +
-                ", state='" + state + '\'' +
+                ", state=" + state +
+                ", classes=" + Arrays.toString(classes) +
                 ')';
     }
 }

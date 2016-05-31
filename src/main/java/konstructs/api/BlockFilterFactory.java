@@ -131,4 +131,22 @@ public class BlockFilterFactory {
     public static BlockFilterNode withBlockState(BlockState state) {
         return EMPTY.withBlockState(state);
     }
+
+    /**
+     * Factory method to create a new BlockFilter with the classes property set
+     * @param classes The classes to be matched
+     * @return The new BlockFilter with the classes property set
+     */
+    public BlockFilterNode withClasses(BlockClassId[] classes) {
+        return EMPTY.withClasses(classes);
+    }
+
+    /**
+     * Factory method to create a new BlockFilter with a single class in the classes property
+     * @param clazz The class to be matched
+     * @return The new BlockFilter with the classes property set
+     */
+    public BlockFilterNode withClass(BlockClassId clazz) {
+        return EMPTY.withClassAdded(clazz);
+    }
 }
