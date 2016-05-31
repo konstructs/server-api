@@ -199,7 +199,7 @@ public final class Inventory {
             if (s != null && s.acceptsPartOf(left)) {
                 AcceptResult<Stack> r = s.acceptPartOf(left);
                 if (r.getGiving() == null) {
-                    return new AcceptResult(result.withSlot(i, r.getAccepting()), null);
+                    return new AcceptResult<Inventory>(result.withSlot(i, r.getAccepting()), null);
                 } else {
                     result = result.withSlot(i, r.getAccepting());
                     left = r.getGiving();
@@ -210,11 +210,11 @@ public final class Inventory {
         for (int i = 0; i < stacks.length; i++) {
             Stack s = stacks[i];
             if (s == null) {
-                return new AcceptResult(result.withSlot(i, left), null);
+                return new AcceptResult<Inventory>(result.withSlot(i, left), null);
             }
         }
         /* Return the leftovers (this may be the complete stack if the inventory is full) */
-        return new AcceptResult(result, left);
+        return new AcceptResult<Inventory>(result, left);
     }
 
     /**

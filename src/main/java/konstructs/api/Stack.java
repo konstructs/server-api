@@ -202,7 +202,7 @@ public final class Stack {
             Block[] newBlocks = new Block[taken.size() + blocks.length];
             System.arraycopy(blocks, 0, newBlocks, 0, blocks.length);
             System.arraycopy(taken.getBlocks(), 0, newBlocks, blocks.length, taken.size());
-            return new AcceptResult(new Stack(newBlocks), stack.drop(r));
+            return new AcceptResult<Stack>(new Stack(newBlocks), stack.drop(r));
         } else {
             return null;
         }
