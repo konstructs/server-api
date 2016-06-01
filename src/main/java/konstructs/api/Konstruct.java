@@ -9,7 +9,7 @@ package konstructs.api;
  * @see InventoryView
  */
 public class Konstruct {
-    private final Pattern pattern;
+    private final PatternTemplate pattern;
     private final Stack result;
 
     /**
@@ -17,7 +17,7 @@ public class Konstruct {
      * @param pattern The pattern that needs to be matched
      * @param result The resulting stack
      */
-    public Konstruct(Pattern pattern, Stack result) {
+    public Konstruct(PatternTemplate pattern, Stack result) {
         this.pattern = pattern;
         this.result = result;
     }
@@ -26,7 +26,7 @@ public class Konstruct {
      * Get the pattern
      * @return The pattern
      */
-    public Pattern getPattern() {
+    public PatternTemplate getPattern() {
         return pattern;
     }
 

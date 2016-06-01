@@ -226,7 +226,7 @@ public final class BlockType implements Serializable {
      * @param clazz the class to check for
      * @return True if the class is present, otherwise false
      */
-    public boolean hasClass(BlockTypeId clazz) {
+    public boolean hasClass(BlockClassId clazz) {
         boolean match = false;
         for(BlockClassId t: this.classes) {
             if(clazz.equals(t)) {

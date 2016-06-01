@@ -18,7 +18,8 @@ javacOptions in (Compile, compile) ++= Seq( "-Xlint:deprecation", "-Xlint:unchec
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka"      %% "akka-actor"    % akkaVersion,
-  "com.google.code.gson"   %  "gson"          % "2.6.2"
+  "com.google.code.gson"   %  "gson"          % "2.6.2",
+  "org.scalatest"          %% "scalatest"             % "2.2.1"  % "test"
 )
 
 bintrayOrganization := Some("konstructs")

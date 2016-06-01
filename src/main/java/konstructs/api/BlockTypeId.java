@@ -47,7 +47,7 @@ public final class BlockTypeId implements Serializable {
         if(name.length() == 0 || namespace.length() == 0) {
             throw new IllegalArgumentException("Name and namespace must not be empty string");
         }
-        if(!Character.isLowerCase(name.charAt(0))) {
+        if(Character.isUpperCase(name.charAt(0))) {
             throw new IllegalArgumentException("First character of block type name must be lower case");
         }
         this.namespace = namespace;

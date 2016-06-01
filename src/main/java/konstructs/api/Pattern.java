@@ -65,41 +65,22 @@ public final class Pattern {
     }
 
     /**
-     * Get the complexity of this pattern. The complexity is defined as
-     * the total number of blocks of this pattern. E.g. a pattern of 1x1
-     * with a stack of 1 block has lower complexity than a pattern of 1x1
-     * with a stack of two blocks. Complexity is useful in crafting when
-     * two patterns match. One can then choose e.g. the more complex pattern
-     * giving the user the ability to remove blocks to craft the other pattern.
-     * @return The complexity (i.e. the number of blocks) of this pattern
-     */
-    public int getComplexity() {
-        int complexity = 0;
-        for(Stack s: stacks) {
-            if(s != null)
-                complexity += s.size();
-        }
-        return complexity;
-    }
-
-    /**
-     * Check whether this pattern is a super set of the given pattern.
-     * This means that from this Pattern the pattern given can be produced,
+     * Check whether this pattern is a super set of the given pattern template.
+     * This means that from this pattern the pattern template given can be produced,
      * i.e. this pattern contains the same layout of stacks of at least
-     * the same size as the pattern given. In crafting, if this method returns true,
-     * the pattern given can be constructed from this pattern.
+     * the same size as the pattern template. In crafting, if this method returns true,
+     * the pattern template given can be constructed from this pattern.
      * @param p The pattern to check
      * @return True if the pattern given can be constructed from this pattern.
      */
-    public boolean contains(Pattern p) {
+    public boolean contains(PatternTemplate p, BlockFactory factory) {
         if(p.getRows() == rows && p.getColumns() == columns && size() == p.size()) {
             for(int i = 0; i < size(); i++) {
                 Stack self = stacks[i];
-                Stack other = p.getStacks()[i];
+                StackTemplate other = p.getStacks()[i];
                 if(self == null && other == null) continue;
-                if(self == null || other == null) return false;
-                if(!self.getTypeId().equals(other.getTypeId())) return false;
-                if(self.size() < other.size()) return false;
+                if(self == null) return false;
+                if(!self.contains(other, factory)) return false;
             }
             return true;
         } else {
