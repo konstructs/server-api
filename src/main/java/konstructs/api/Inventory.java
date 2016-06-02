@@ -391,6 +391,7 @@ public final class Inventory {
     /**
      * Remove all blocks in a pattern
      * @param pattern The pattern for which blocks should be removed
+     * @param factory The block factory that is used to match class IDs
      * @return A new inventory with the pattern removed or if not possible null
      */
     public Inventory remove(PatternTemplate pattern, BlockFactory factory) {

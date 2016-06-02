@@ -71,6 +71,7 @@ public final class Pattern {
      * the same size as the pattern template. In crafting, if this method returns true,
      * the pattern template given can be constructed from this pattern.
      * @param p The pattern to check
+     * @param factory The block factory that is used to match class IDs
      * @return True if the pattern given can be constructed from this pattern.
      */
     public boolean contains(PatternTemplate p, BlockFactory factory) {

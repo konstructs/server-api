@@ -2,29 +2,58 @@ package konstructs.api;
 
 import java.util.Arrays;
 
+/**
+ * PatternTemplate is an immutable class that represents a template of stacks that can be matched
+ * against when doing konstructing. It is basically a recipe and if the player arranges blocks
+ * in the same way, it can be matched. An arrangement of blocks, a {@link Pattern}, can be validated
+ * against a pattern template using its {@link Pattern#contains(PatternTemplate, BlockFactory)} method.
+ * If it is true, the pattern contains at least as many blocks in the right arrangement as the pattern template.
+ */
 public class PatternTemplate {
     private final StackTemplate[] stacks;
     private final int columns;
     private final int rows;
 
+    /**
+     * Constructs an immutable PatternTemplate.
+     * @param stacks The array of stacks that forms the template
+     * @param rows The number of rows of the pattern
+     * @param columns The number of columns of the pattern
+     */
     public PatternTemplate(StackTemplate[] stacks, int rows, int columns) {
         this.stacks = stacks;
         this.columns = columns;
         this.rows = rows;
     }
 
+    /**
+     * Return the stacks that forms this pattern
+     * @return The stacks of the pattern
+     */
     public StackTemplate[] getStacks() {
         return stacks;
     }
 
+    /**
+     * Return the number of columns of this pattern
+     * @return The number of columns
+     */
     public int getColumns() {
         return columns;
     }
 
+    /**
+     * Return the number of rows of this pattern
+     * @return The number of rows
+     */
     public int getRows() {
         return rows;
     }
 
+    /**
+     * Return the total size (rows * columns) of this pattern
+     * @return The size
+     */
     public int size() {
         return stacks.length;
     }

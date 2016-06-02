@@ -224,6 +224,12 @@ public final class Stack {
         }
     }
 
+    /**
+     * Check if this stack contains enough blocks of the right type to contain a template.
+     * @param other The template to check
+     * @param factory A block factory to validate block classes
+     * @return True if this stack contains the template, false if not
+     */
     public boolean contains(StackTemplate other, BlockFactory factory) {
         if(other == null) return false;
         if(size() < other.getSize()) return false;
