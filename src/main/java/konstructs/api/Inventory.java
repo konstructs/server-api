@@ -199,7 +199,7 @@ public final class Inventory {
             if (s != null && s.acceptsPartOf(left)) {
                 AcceptResult<Stack> r = s.acceptPartOf(left);
                 if (r.getGiving() == null) {
-                    return new AcceptResult(result.withSlot(i, r.getAccepting()), null);
+                    return new AcceptResult<Inventory>(result.withSlot(i, r.getAccepting()), null);
                 } else {
                     result = result.withSlot(i, r.getAccepting());
                     left = r.getGiving();
@@ -210,11 +210,11 @@ public final class Inventory {
         for (int i = 0; i < stacks.length; i++) {
             Stack s = stacks[i];
             if (s == null) {
-                return new AcceptResult(result.withSlot(i, left), null);
+                return new AcceptResult<Inventory>(result.withSlot(i, left), null);
             }
         }
         /* Return the leftovers (this may be the complete stack if the inventory is full) */
-        return new AcceptResult(result, left);
+        return new AcceptResult<Inventory>(result, left);
     }
 
     /**
@@ -222,7 +222,7 @@ public final class Inventory {
      * as the given stack contains. If this inventory does not contain enough
      * blocks, the unmodified inventory is returned
      * @param stack The stack of blocks that should be removed
-     * @return A new inventory with the number of blocks removed as the stack
+     * @return A new inventory with the number of blocks removed as the
      *         given stack contained or the inventory itself
      */
     public Inventory remove(Stack stack) {
@@ -389,16 +389,48 @@ public final class Inventory {
     }
 
     /**
-     * Remove all blocks from a pattern
+     * Remove all blocks in a pattern
      * @param pattern The pattern for which blocks should be removed
-     * @return A new inventory with the pattern removed
+     * @param factory The block factory that is used to match class IDs
+     * @return A new inventory with the pattern removed or if not possible null
      */
-    public Inventory removePattern(Pattern pattern) {
-        Inventory newInventory = this;
-        for(Stack stack: pattern.getStacks()) {
-            newInventory = newInventory.remove(stack);
+    public Inventory remove(PatternTemplate pattern, BlockFactory factory) {
+        if(pattern.size() > stacks.length) {
+            /* Impossible, invetory is just too small */
+            return null;
+        } else {
+            Stack[] newStacks = new Stack[stacks.length];
+            int j = 0;
+            for(int i = 0; i < stacks.length; i++) {
+
+                /* if there are no stacks left in pattern,
+                 * all stacks of inventory must match null */
+                StackTemplate other = null;
+                if(j < pattern.size()) {
+                    /* Only set other if there are stacks left in pattern */
+                    other = pattern.getStacks()[j];
+                }
+
+                Stack self = stacks[i];
+                if(self == null && other == null) {
+                    /* Both are null, nothing to do, check next stack in template */
+                    j++;
+                } else if(self == null) {
+                    /* Self is null, continue to check against next stack in inventory */
+                } else if(self.contains(other, factory)) {
+                    /* The stack in the inventory contains enough block to match the pattern.
+                     * Remove them from the stack and check nect stack in template */
+                    j++;
+                    newStacks[i] = self.drop(other.getSize());
+                } else {
+                    /* Stack doesn't match stack template from pattern. This means the pattern
+                     * can not match the inventory. Fail!
+                     */
+                    return null;
+                }
+            }
+            return new Inventory(newStacks);
         }
-        return newInventory;
     }
 
     @Override

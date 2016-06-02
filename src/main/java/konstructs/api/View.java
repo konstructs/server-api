@@ -1,5 +1,6 @@
 package konstructs.api;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,11 +22,13 @@ import java.util.Map;
 public final class View {
     public static final int COLUMNS = 17;
     public static final int ROWS = 14;
+
+    private static final Map<Integer, Stack> EMPTY_MAP = Collections.emptyMap();
     /**
      * Definition of an empty view with no content. This is
      * the starting point to create a view.
      */
-    public static final View EMPTY = new View(new HashMap());
+    public static final View EMPTY = new View(EMPTY_MAP);
     private final Map<Integer, Stack> items;
 
     private View(Map<Integer, Stack> items) {
@@ -53,7 +56,7 @@ public final class View {
      * @see InventoryView
      */
     public View add(InventoryView inventoryView, Inventory inventory) {
-        Map<Integer, Stack> newItems = new HashMap(items);
+        Map<Integer, Stack> newItems = new HashMap<>(items);
         for(int row = 0; row < inventoryView.getRows(); row++) {
             for (int column = 0; column < inventoryView.getColumns(); column++) {
                 int r = row + inventoryView.getRowOffset();

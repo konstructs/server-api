@@ -202,7 +202,7 @@ public final class Stack {
             Block[] newBlocks = new Block[taken.size() + blocks.length];
             System.arraycopy(blocks, 0, newBlocks, 0, blocks.length);
             System.arraycopy(taken.getBlocks(), 0, newBlocks, blocks.length, taken.size());
-            return new AcceptResult(new Stack(newBlocks), stack.drop(r));
+            return new AcceptResult<Stack>(new Stack(newBlocks), stack.drop(r));
         } else {
             return null;
         }
@@ -221,6 +221,22 @@ public final class Stack {
             return new Stack(newBlocks);
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Check if this stack contains enough blocks of the right type to contain a template.
+     * @param other The template to check
+     * @param factory A block factory to validate block classes
+     * @return True if this stack contains the template, false if not
+     */
+    public boolean contains(StackTemplate other, BlockFactory factory) {
+        if(other == null) return false;
+        if(size() < other.getSize()) return false;
+        if(other.getId().isBlockTypeId()) {
+            return other.getId().getBlockTypeId().equals(getTypeId());
+        } else {
+            return factory.getBlockType(getTypeId()).hasClass(other.getId().getBlockClassId());
         }
     }
 
