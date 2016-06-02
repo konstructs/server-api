@@ -233,7 +233,7 @@ public final class Stack {
     public boolean contains(StackTemplate other, BlockFactory factory) {
         if(other == null) return false;
         if(size() < other.getSize()) return false;
-        if(other.getId().isBlocKTypeId()) {
+        if(other.getId().isBlockTypeId()) {
             return other.getId().getBlockTypeId().equals(getTypeId());
         } else {
             return factory.getBlockType(getTypeId()).hasClass(other.getId().getBlockClassId());
