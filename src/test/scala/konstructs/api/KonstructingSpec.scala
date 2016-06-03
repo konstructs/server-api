@@ -90,80 +90,85 @@ class KonstructingSpec extends WordSpec with Matchers {
     }
     "remove only the blocks of a 2x1 pattern for a 2x2 inventory" in {
       val i = new Inventory(Array(new Stack(Array(b(One), b(One))), null, s(Two), null))
-      i.remove(new PatternTemplate(Array(st(One), st(Two)), 2, 1), factory) shouldEqual
+      i.remove(new PatternTemplate(Array(st(One), st(Two)), 2, 1), factory, 1) shouldEqual
         new Inventory(Array(s(One), null, null, null))
     }
     "remove all blocks of a 2x1 pattern for a 2x2 inventory" in {
       val i = new Inventory(Array(s(One), null, s(Two), null))
-      i.remove(new PatternTemplate(Array(st(One), st(Two)), 2, 1), factory) shouldEqual
+      i.remove(new PatternTemplate(Array(st(One), st(Two)), 2, 1), factory, 1) shouldEqual
+        new Inventory(Array(null, null, null, null))
+    }
+    "remove all blocks of a 2x1 pattern for a 2x2 inventory two times" in {
+      val i = new Inventory(Array(new Stack(Array(b(One), b(One))), null, new Stack(Array(b(Two), b(Two))), null))
+      i.remove(new PatternTemplate(Array(st(One), st(Two)), 2, 1), factory, 2) shouldEqual
         new Inventory(Array(null, null, null, null))
     }
     "fail to remove a pattern from a too small inventory" in {
       val i = new Inventory(Array(s(One)))
-      i.remove(new PatternTemplate(Array(st(One), st(Two)), 2, 1), factory) shouldEqual
+      i.remove(new PatternTemplate(Array(st(One), st(Two)), 2, 1), factory, 1) shouldEqual
         null
     }
     "fail to remove a pattern from an inventory that doesn't match" in {
       val i = new Inventory(Array(s(One), s(Three)))
-      i.remove(new PatternTemplate(Array(st(One), st(Two)), 2, 1), factory) shouldEqual
+      i.remove(new PatternTemplate(Array(st(One), st(Two)), 2, 1), factory, 1) shouldEqual
         null
     }
     "fail to remove a pattern from an inventory that has extra stacks" in {
       val i = new Inventory(Array(s(One), s(Three)))
-      i.remove(new PatternTemplate(Array(st(One)), 1, 1), factory) shouldEqual
+      i.remove(new PatternTemplate(Array(st(One)), 1, 1), factory, 1) shouldEqual
         null
     }
     "fail to remove a pattern from an inventory with to few elements in stack" in {
       val i = new Inventory(Array(s(One)))
-      i.remove(new PatternTemplate(Array(new StackTemplate(new BlockOrClassId(One), 2)), 1, 1), factory) shouldEqual
+      i.remove(new PatternTemplate(Array(new StackTemplate(new BlockOrClassId(One), 2)), 1, 1), factory, 1) shouldEqual
         null
     }
     "remove blocks pattern wise by a 2x1 pattern for a 2x2 inventory" in {
       val i = new Inventory(Array(new Stack(Array(b(One), b(One))), null, s(One), null))
-      i.remove(new PatternTemplate(Array(st(One), st(One)), 2, 1), factory) shouldEqual
+      i.remove(new PatternTemplate(Array(st(One), st(One)), 2, 1), factory, 1) shouldEqual
         new Inventory(Array(s(One), null, null, null))
     }
     "remove only the blocks of a 2x1 pattern for a 2x2 inventory based on class" in {
       val i = new Inventory(Array(new Stack(Array(b(One), b(One))), null, s(Two), null))
-      i.remove(new PatternTemplate(Array(st(One), st(ClassOne)), 2, 1), factory) shouldEqual
+      i.remove(new PatternTemplate(Array(st(One), st(ClassOne)), 2, 1), factory, 1) shouldEqual
         new Inventory(Array(s(One), null, null, null))
     }
     "remove all blocks of a 2x1 pattern for a 2x2 inventory based on several classes" in {
       val i = new Inventory(Array(s(Two), null, s(Three), null))
-      i.remove(new PatternTemplate(Array(st(ClassOne), st(ClassOne)), 2, 1), factory) shouldEqual
+      i.remove(new PatternTemplate(Array(st(ClassOne), st(ClassOne)), 2, 1), factory, 1) shouldEqual
         new Inventory(Array(null, null, null, null))
     }
   }
   "A Pattern" should {
     "contain a 1x1 pattern in a 1x1 pattern" in {
-      new Pattern(Array(s(One)), 1, 1).contains(new PatternTemplate(Array(st(One)), 1, 1), factory) shouldEqual true
+      new Pattern(Array(s(One)), 1, 1).contains(new PatternTemplate(Array(st(One)), 1, 1), factory) shouldEqual 1
     }
     "contain a 1x1 pattern in a 1x1 pattern with more blocks" in {
-      new Pattern(Array(new Stack(Array(b(One), b(One), b(One)))), 1, 1).contains(new PatternTemplate(Array(st(One)), 1, 1), factory) shouldEqual true
+      new Pattern(Array(new Stack(Array(b(One), b(One), b(One)))), 1, 1).contains(new PatternTemplate(Array(st(One)), 1, 1), factory) shouldEqual 3
     }
     "not contain a 1x1 pattern in an empty" in {
-      new Pattern(Array(null), 1, 1).contains(new PatternTemplate(Array(st(One)), 1, 1), factory) shouldEqual false
+      new Pattern(Array(null), 1, 1).contains(new PatternTemplate(Array(st(One)), 1, 1), factory) shouldEqual 0
     }
     "contain a 1x2 pattern in a 1x2 pattern" in {
-      new Pattern(Array(s(One), s(Two)), 1, 2).contains(new PatternTemplate(Array(st(One), st(Two)), 1, 2), factory) shouldEqual true
+      new Pattern(Array(s(One), s(Two)), 1, 2).contains(new PatternTemplate(Array(st(One), st(Two)), 1, 2), factory) shouldEqual 1
     }
     "contain a 1x2 pattern in a 1x2 pattern with more blocks" in {
-      new Pattern(Array(new Stack(Array(b(One), b(One), b(One))), s(Two)), 1, 2).contains(new PatternTemplate(Array(st(One), st(Two)), 1, 2), factory) shouldEqual true
+      new Pattern(Array(new Stack(Array(b(One), b(One), b(One))), s(Two)), 1, 2).contains(new PatternTemplate(Array(st(One), st(Two)), 1, 2), factory) shouldEqual 1
     }
     "not contain a 1x2 pattern in an invalid 1x2 pattern" in {
-      new Pattern(Array(s(Three), s(Two)), 1, 2).contains(new PatternTemplate(Array(st(One), st(Two)), 1, 2), factory) shouldEqual false
+      new Pattern(Array(s(Three), s(Two)), 1, 2).contains(new PatternTemplate(Array(st(One), st(Two)), 1, 2), factory) shouldEqual 0
     }
     "contain a 1x1 pattern in a 1x1 pattern based on class" in {
-      new Pattern(Array(s(Two)), 1, 1).contains(new PatternTemplate(Array(st(ClassOne)), 1, 1), factory) shouldEqual true
+      new Pattern(Array(s(Two)), 1, 1).contains(new PatternTemplate(Array(st(ClassOne)), 1, 1), factory) shouldEqual 1
     }
     "contain a 1x1 pattern in a 1x1 pattern based on class (mutliple classes)" in {
-      new Pattern(Array(s(Three)), 1, 1).contains(new PatternTemplate(Array(st(ClassOne)), 1, 1), factory) shouldEqual true
+      new Pattern(Array(s(Three)), 1, 1).contains(new PatternTemplate(Array(st(ClassOne)), 1, 1), factory) shouldEqual 1
     }
     "not contain a 1x1 pattern in a 1x1 pattern based on mismatching class" in {
-      new Pattern(Array(s(One)), 1, 1).contains(new PatternTemplate(Array(st(ClassOne)), 1, 1), factory) shouldEqual false
+      new Pattern(Array(s(One)), 1, 1).contains(new PatternTemplate(Array(st(ClassOne)), 1, 1), factory) shouldEqual 0
     }
     "contain a 1x2 pattern in a 1x2 pattern with more blocks based on classes" in {
-      new Pattern(Array(new Stack(Array(b(Two), b(Two), b(Two))), s(Three)), 1, 2).contains(new PatternTemplate(Array(st(ClassOne), st(ClassTwo)), 1, 2), factory) shouldEqual true
+      new Pattern(Array(new Stack(Array(b(Two), b(Two), b(Two))), s(Three)), 1, 2).contains(new PatternTemplate(Array(st(ClassOne), st(ClassTwo)), 1, 2), factory) shouldEqual 1
     }
   }
 
