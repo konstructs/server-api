@@ -67,6 +67,22 @@ public final class Stack {
         return new Stack(blocks);
     }
 
+    /**
+     * Creates a new stack of a given size.
+     * @param id BlockTypeId of this stack
+     * @param size number of blocks in this stack
+     * @return The new stack
+     */
+    public static Stack createOfSize(BlockTypeId id, int size) {
+        if(size > MAX_SIZE)
+            throw new IllegalArgumentException("Can not produce a stack bigger than " + MAX_SIZE + " blocks.");
+        Block[] blocks = new Block[size];
+        for(int i = 0; i < size; i++) {
+            blocks[i] = Block.create(id);
+        }
+        return new Stack(blocks);
+    }
+
     private final Block[] blocks;
 
     /**
@@ -153,6 +169,7 @@ public final class Stack {
      * @return A new stack with the n first blocks of this stack
      */
     public Stack take(int n) {
+        if(n == 0) return null;
         return new Stack(Arrays.copyOf(blocks, Math.min(n, blocks.length)));
     }
 
@@ -225,18 +242,25 @@ public final class Stack {
     }
 
     /**
-     * Check if this stack contains enough blocks of the right type to contain a template.
+     * Check if this stack contains enough blocks of the right type to contain a template
+     * a number of times.
      * @param other The template to check
      * @param factory A block factory to validate block classes
-     * @return True if this stack contains the template, false if not
+     * @return The number of times the template is contained within this stack
      */
-    public boolean contains(StackTemplate other, BlockFactory factory) {
-        if(other == null) return false;
-        if(size() < other.getSize()) return false;
+    public int contains(StackTemplate other, BlockFactory factory) {
+        if(other == null) return 0;
+        int numberOf = size() / other.getSize();
         if(other.getId().isBlockTypeId()) {
-            return other.getId().getBlockTypeId().equals(getTypeId());
+            if(other.getId().getBlockTypeId().equals(getTypeId()))
+                return numberOf;
+            else
+                return 0;
         } else {
-            return factory.getBlockType(getTypeId()).hasClass(other.getId().getBlockClassId());
+            if(factory.getBlockType(getTypeId()).hasClass(other.getId().getBlockClassId()))
+                return numberOf;
+            else
+                return 0;
         }
     }
 
