@@ -392,9 +392,10 @@ public final class Inventory {
      * Remove all blocks in a pattern
      * @param pattern The pattern for which blocks should be removed
      * @param factory The block factory that is used to match class IDs
+     * @param number The number of times the pattern should be removed
      * @return A new inventory with the pattern removed or if not possible null
      */
-    public Inventory remove(PatternTemplate pattern, BlockFactory factory) {
+    public Inventory remove(PatternTemplate pattern, BlockFactory factory, int number) {
         if(pattern.size() > stacks.length) {
             /* Impossible, invetory is just too small */
             return null;
@@ -417,11 +418,11 @@ public final class Inventory {
                     j++;
                 } else if(self == null) {
                     /* Self is null, continue to check against next stack in inventory */
-                } else if(self.contains(other, factory)) {
+                } else if(self.contains(other, factory) >= number) {
                     /* The stack in the inventory contains enough block to match the pattern.
                      * Remove them from the stack and check nect stack in template */
                     j++;
-                    newStacks[i] = self.drop(other.getSize());
+                    newStacks[i] = self.drop(other.getSize() * number);
                 } else {
                     /* Stack doesn't match stack template from pattern. This means the pattern
                      * can not match the inventory. Fail!

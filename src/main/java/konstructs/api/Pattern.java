@@ -68,24 +68,27 @@ public final class Pattern {
      * Check whether this pattern is a super set of the given pattern template.
      * This means that from this pattern the pattern template given can be produced,
      * i.e. this pattern contains the same layout of stacks of at least
-     * the same size as the pattern template. In crafting, if this method returns true,
-     * the pattern template given can be constructed from this pattern.
+     * the same size as the pattern template. In crafting, if this method returns a positive number,
+     * that number of pattern templates can be constructed from this pattern.
      * @param p The pattern to check
      * @param factory The block factory that is used to match class IDs
-     * @return True if the pattern given can be constructed from this pattern.
+     * @return The number of times the pattern can be constructed.
      */
-    public boolean contains(PatternTemplate p, BlockFactory factory) {
+    public int contains(PatternTemplate p, BlockFactory factory) {
         if(p.getRows() == rows && p.getColumns() == columns && size() == p.size()) {
+            int numberOf = Stack.MAX_SIZE;
             for(int i = 0; i < size(); i++) {
                 Stack self = stacks[i];
                 StackTemplate other = p.getStacks()[i];
                 if(self == null && other == null) continue;
-                if(self == null) return false;
-                if(!self.contains(other, factory)) return false;
+                if(self == null) return 0;
+                int n = self.contains(other, factory);
+                if(n < numberOf)
+                    numberOf = n;
             }
-            return true;
+            return numberOf;
         } else {
-            return false;
+            return 0;
         }
     }
 
