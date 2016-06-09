@@ -76,6 +76,9 @@ public class Health {
      * @return A new Health instance with its health decreased or {@link Health#DESTROYED}
      */
     public Health damage(int damage) {
+        if(damage == 0)
+            return this;
+
         int newHealth = health - damage;
         if(newHealth > 0) {
             return new Health(newHealth);
