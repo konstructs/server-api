@@ -21,6 +21,17 @@ public class Health {
      */
     public static final Health DESTROYED = new Health(0);
 
+    /**
+     * Helper method to calculate the damage received based on
+     * the damage and durability fields of block type.
+     * @param damage the amount of damage
+     * @param durability the amount of durability
+     * @return the integer damage to be dealt
+     */
+    public static final int calculateDamage(float damage, float durability) {
+        return (int)((damage / durability) * (float)MAX_HEALTH);
+    }
+
     private final int health;
 
     /**
@@ -62,7 +73,7 @@ public class Health {
     /**
      * Returns a new health instance that has suffered the given damage
      * @param damage the amount of damage to be done to this instance
-     * @return A new Health instance with its health decreased with damaged or {@link Health#DESTROYED}
+     * @return A new Health instance with its health decreased or {@link Health#DESTROYED}
      */
     public Health damage(int damage) {
         int newHealth = health - damage;
@@ -74,9 +85,21 @@ public class Health {
     }
 
     /**
+     * Returns a new health instance that has suffered damage calculated from
+     * a dealing block's {@link BlockType#getDamage() damage} damage and a receiving block's
+     * {@link BlockType#getDurability() durability}.
+     * @param damage the amount of damage the dealing block has
+     * @param durability the amount of durability of the receiving block
+     * @return A new Health instance with its health decreased or {@link Health#DESTROYED}
+     */
+    public Health damage(float damage, float durability) {
+        return damage(calculateDamage(damage, durability));
+    }
+
+    /**
      * Returns a new health instance that has been healed with the given health
      * @param health the amount of health to be healed to this instance
-     * @return A new Health instance with its health increased with the health given or {@link Health#PRISTINE}
+     * @return A new Health instance with its health increased or {@link Health#PRISTINE}
      */
     public Health heal(int health) {
         int newHealth = this.health + health;
