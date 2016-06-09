@@ -28,6 +28,8 @@ import java.util.UUID;
 public final class Block {
     private final UUID id;
     private final BlockTypeId type;
+    private final Health health;
+
 
     /**
      * Factory method that creates a new block with an associated random id.
@@ -78,13 +80,26 @@ public final class Block {
     }
 
     /**
-     * Constructs a immutable Block
-     * @param id The ID that should be associated with the Block (may be null)
+     * Constructs a immutable Block in {@link Health#PRISTINE pristine} condition.
+     *
+     * @param id   The ID that should be associated with the Block (may be null)
      * @param type The type of the block
      */
     public Block(UUID id, BlockTypeId type) {
+        this(id, type, Health.PRISTINE);
+    }
+
+    /**
+     * Constructs a immutable Block
+     *
+     * @param id     The ID that should be associated with the Block (may be null)
+     * @param type   The type of the block
+     * @param health The health level of this block
+     */
+    public Block(UUID id, BlockTypeId type, Health health) {
         this.id = id;
         this.type = type;
+        this.health = health;
     }
 
     /**
@@ -104,6 +119,15 @@ public final class Block {
         return type;
     }
 
+    /**
+     * Returns the health level of this block.
+     *
+     * @return The health level of this block
+     */
+    public Health getHealth() {
+        return health;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -112,7 +136,8 @@ public final class Block {
         Block block = (Block) o;
 
         if (id != null ? !id.equals(block.id) : block.id != null) return false;
-        return type.equals(block.type);
+        if (!type.equals(block.type)) return false;
+        return health.equals(block.health);
 
     }
 
@@ -120,6 +145,7 @@ public final class Block {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + type.hashCode();
+        result = 31 * result + health.hashCode();
         return result;
     }
 
@@ -128,6 +154,8 @@ public final class Block {
         return "Block(" +
                 "id=" + id +
                 ", type=" + type +
+                ", health=" + health +
                 ')';
     }
+
 }
