@@ -36,7 +36,7 @@ public class Health {
 
     /**
      * Creates an immutable Health instance with a given health level.
-     * @param health Health level must be >= 0 and < {@link Health#MAX_HEALTH}
+     * @param health Health level must be greater or equal to 0 and smaller than {@link Health#MAX_HEALTH}
      */
     public Health(int health) {
         if(health > MAX_HEALTH)
@@ -58,7 +58,7 @@ public class Health {
      * Query if the condition of this instance is destroyed
      * @return True if destroyed, otherwise false
      */
-    public boolean isDestroyed() {
+    public boolean isDestroyed() {  
         return health == 0;
     }
 
