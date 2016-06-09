@@ -96,20 +96,6 @@ public class Health {
         return damage(calculateDamage(damage, durability));
     }
 
-    /**
-     * Returns a new health instance that has been healed with the given health
-     * @param health the amount of health to be healed to this instance
-     * @return A new Health instance with its health increased or {@link Health#PRISTINE}
-     */
-    public Health heal(int health) {
-        int newHealth = this.health + health;
-        if(newHealth < MAX_HEALTH) {
-            return new Health(newHealth);
-        } else {
-            return PRISTINE;
-        }
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
