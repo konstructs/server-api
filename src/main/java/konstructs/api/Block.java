@@ -125,6 +125,8 @@ public final class Block {
      * @return The health level of this block
      */
     public Health getHealth() {
+        /* This makes sure that old blocks loaded from JSON still works */
+        if(health == null) return Health.PRISTINE;
         return health;
     }
 
@@ -137,7 +139,7 @@ public final class Block {
 
         if (id != null ? !id.equals(block.id) : block.id != null) return false;
         if (!type.equals(block.type)) return false;
-        return health.equals(block.health);
+        return health != null ? health.equals(block.health) : block.health == null;
 
     }
 
@@ -145,7 +147,7 @@ public final class Block {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + type.hashCode();
-        result = 31 * result + health.hashCode();
+        result = 31 * result + (health != null ? health.hashCode() : 0);
         return result;
     }
 

@@ -28,8 +28,25 @@ public class Health {
      * @param durability the amount of durability
      * @return the integer damage to be dealt
      */
-    public static final int calculateDamage(float damage, float durability) {
+    public static int calculateDamage(float damage, float durability) {
         return (int)((damage / durability) * (float)MAX_HEALTH);
+    }
+
+    /**
+     * Get an immutable health instance.
+     *
+     * @param health the health level of the instance, must be greater or equal to 0
+     *               and smaller than {@link Health#MAX_HEALTH}.
+     * @return A new instance, {@link Health#PRISTINE} or {@link Health#DESTROYED}
+     */
+    public static Health get(int health) {
+        if(health == MAX_HEALTH) {
+            return PRISTINE;
+        } else if(health == 0) {
+            return DESTROYED;
+        } else {
+            return new Health(health);
+        }
     }
 
     private final int health;
@@ -38,7 +55,7 @@ public class Health {
      * Creates an immutable Health instance with a given health level.
      * @param health Health level must be greater or equal to 0 and smaller than {@link Health#MAX_HEALTH}
      */
-    public Health(int health) {
+    Health(int health) {
         if(health > MAX_HEALTH)
             throw new IllegalArgumentException("Health can not be higher than " + MAX_HEALTH);
         if(health < 0)
@@ -58,7 +75,7 @@ public class Health {
      * Query if the condition of this instance is destroyed
      * @return True if destroyed, otherwise false
      */
-    public boolean isDestroyed() {  
+    public boolean isDestroyed() {
         return health == 0;
     }
 

@@ -10,6 +10,19 @@ import java.util.Map;
  */
 public interface BlockFactory {
     /**
+     * Creates a new block with the given w-value, ID and health
+     * <p>
+     * Note: This method is mainly for internal use and is only required
+     * when altering the low level block format.
+     * </p>
+     * @param uuid The ID of the new block
+     * @param w The w-value that identifies the blocks BlockTypeId
+     * @param health the heath of the block
+     * @return The newly created Block
+     */
+    public Block createBlock(UUID uuid, int w, int health);
+
+    /**
      * Creates a new block with the given w-value and ID
      * <p>
      * Note: This method is mainly for internal use and is only required
