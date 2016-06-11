@@ -251,6 +251,8 @@ public final class BlockType implements Serializable {
 
     /**
      * Returns the damage given by this block type if used on the given type
+     * @param typeId The ID of the block type
+     * @param type The block type
      * @return the damage given by this block type if used on given type
      */
     public float getDamageWithMultiplier(BlockTypeId typeId, BlockType type) {
@@ -268,28 +270,35 @@ public final class BlockType implements Serializable {
     /**
      * Return the damage multiplier for a given block type or class ID or 1.0 if no
      * multiplier is set.
+     * @param id Block type or class ID
      * @return the damage multiplier for the given block type or class ID or 1.0
      */
     public float getDamageMultiplier(BlockOrClassId id) {
-        return damageMultipliers.getOrDefault(id, 1.0f);
+        if(damageMultipliers.containsKey(id)) {
+            return damageMultipliers.get(id);
+        } else {
+            return 1.0f;
+        }
     }
 
     /**
      * Return the damage multiplier for a given block typ ID or 1.0 if no
      * multiplier is set.
+     * @param id Block type ID
      * @return the damage multiplier for the given block type ID or 1.0
      */
     public float getDamageMultiplier(BlockTypeId id) {
-        return damageMultipliers.getOrDefault(new BlockOrClassId(id), 1.0f);
+        return getDamageMultiplier(new BlockOrClassId(id));
     }
 
     /**
      * Return the damage multiplier for a given block class ID or 1.0 if no
      * multiplier is set.
+     * @param id Block class ID
      * @return the damage multiplier for the given block class ID or 1.0
      */
     public float getDamageMultiplier(BlockClassId id) {
-        return damageMultipliers.getOrDefault(new BlockOrClassId(id), 1.0f);
+        return getDamageMultiplier(new BlockOrClassId(id));
     }
 
     /**
