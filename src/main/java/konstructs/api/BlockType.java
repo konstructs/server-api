@@ -267,8 +267,10 @@ public final class BlockType implements Serializable {
      * field.
      * @param faces the new value for faces
      * @return the copy
+     * @deprecated This method is deprecated in version 0.1.10 (it will be removed in 0.2.+)
      * @see #getFaces()
      */
+    @Deprecated
     public BlockType withFaces(int[] faces) {
         return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage);
     }
@@ -291,8 +293,10 @@ public final class BlockType implements Serializable {
      * field.
      * @param shape the new value for shape
      * @return the copy
+     * @deprecated This method is deprecated in version 0.1.10 (it will be removed in 0.2.+)
      * @see #getBlockShape()
      */
+    @Deprecated
     public BlockType withBlockShape(BlockShape shape) {
         return new BlockType(faces, shape, obstacle, transparent, blockState, classes, durability, damage);
     }
@@ -302,8 +306,10 @@ public final class BlockType implements Serializable {
      * field.
      * @param obstacle the new value for obstacle
      * @return the copy
+     * @deprecated This method is deprecated in version 0.1.10 (it will be removed in 0.2.+)
      * @see #isObstacle()
      */
+    @Deprecated
     public BlockType withObstacle(boolean obstacle) {
         return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage);
     }
@@ -313,8 +319,10 @@ public final class BlockType implements Serializable {
      * field.
      * @param transparent the new value for transparent
      * @return the copy
+     * @deprecated This method is deprecated in version 0.1.10 (it will be removed in 0.2.+)
      * @see #isTransparent()
      */
+    @Deprecated
     public BlockType withTransparent(boolean transparent) {
         return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage);
     }
@@ -337,8 +345,10 @@ public final class BlockType implements Serializable {
      * field.
      * @param state the new value for state
      * @return the copy
+     * @deprecated This method is deprecated in version 0.1.10 (it will be removed in 0.2.+)
      * @see #getBlockState()
      */
+    @Deprecated
     public BlockType withBlockState(BlockState state) {
         return new BlockType(faces, blockShape, obstacle, transparent, state, classes, durability, damage);
     }
@@ -348,8 +358,10 @@ public final class BlockType implements Serializable {
      * field.
      * @param classes the new list of classes
      * @return the copy
+     * @deprecated This method is deprecated in version 0.1.10 (it will be removed in 0.2.+)
      * @see #getClasses()
      */
+    @Deprecated
     public BlockType withClasses(BlockClassId[] classes) {
         return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage);
     }
@@ -358,8 +370,10 @@ public final class BlockType implements Serializable {
      * Returns a copy with a new value for the durability field.
      * @param durability the new durability value
      * @return the copy
+     * @deprecated This method is deprecated in version 0.1.10 (it will be removed in 0.2.+)
      * @see #getDurability()
      */
+    @Deprecated
     public BlockType withDurability(float durability) {
         return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage);
     }
@@ -368,8 +382,10 @@ public final class BlockType implements Serializable {
      * Returns a copy with a new value for the damage field.
      * @param damage the new damage value
      * @return the copy
+     * @deprecated This method is deprecated in version 0.1.10 (it will be removed in 0.2.+)
      * @see #getDurability()
      */
+    @Deprecated
     public BlockType withDamage(float damage) {
         return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage);
     }
