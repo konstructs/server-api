@@ -41,6 +41,7 @@ class KonstructingSpec extends WordSpec with Matchers {
 
     override def getW(typeId: BlockTypeId): Int = ???
 
+    override def createBlock(uuid: UUID, w: Int, health: Int): Block = ???
   }
   def s(t: BlockTypeId) = Stack.createFromBlock(new Block(null, t))
   def b(t: BlockTypeId) = new Block(null, t)
