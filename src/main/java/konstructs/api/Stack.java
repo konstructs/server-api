@@ -159,8 +159,7 @@ public final class Stack {
      */
     public Stack getTail() {
         if(blocks.length == 1) return null;
-        int newLength = blocks.length - 1;
-        return new Stack(Arrays.copyOf(blocks, newLength));
+        return new Stack(Arrays.copyOfRange(blocks, 1, blocks.length));
     }
 
     /**
