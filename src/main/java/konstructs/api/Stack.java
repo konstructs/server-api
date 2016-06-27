@@ -154,13 +154,23 @@ public final class Stack {
     }
 
     /**
+     * Replace the Block at the head (top) of the stack
+     * @param block The block that will replace the current block at the head of the stack.
+     * @return A new stack with the block at the head position
+     */
+    public Stack replaceHead(Block block) {
+        Block[] newBlocks = Arrays.copyOf(blocks, blocks.length);
+        newBlocks[0] = block;
+        return new Stack(newBlocks);
+    }
+
+    /**
      * Return the tail of this stack
      * @return The tail of this stack
      */
     public Stack getTail() {
         if(blocks.length == 1) return null;
-        int newLength = blocks.length - 1;
-        return new Stack(Arrays.copyOf(blocks, newLength));
+        return new Stack(Arrays.copyOfRange(blocks, 1, blocks.length));
     }
 
     /**
