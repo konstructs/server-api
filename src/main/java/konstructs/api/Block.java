@@ -130,6 +130,15 @@ public final class Block {
         return health;
     }
 
+    /**
+     * Returns a new block with the given ID set
+     * @param id The new ID to set
+     * @return The new block with the ID set
+     */
+    public Block withId(UUID id) {
+        return new Block(id, type, health);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
