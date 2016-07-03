@@ -22,6 +22,37 @@ import akka.actor.ActorRef;
 public class InteractTertiaryFilter extends Filter<InteractTertiary>{
 
     /**
+     * This class is used as a marker when the filter was skipped in the first phase
+     */
+    public static class Skipped {
+        private final Filter<InteractTertiary> filter;
+
+        public Skipped(Filter<InteractTertiary> filter) {
+            this.filter = filter;
+        }
+
+        public Filter<InteractTertiary> getFilter() {
+            return filter;
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
+
+            Skipped skipped = (Skipped) o;
+
+            return filter.equals(skipped.filter);
+
+        }
+
+        @Override
+        public int hashCode() {
+            return filter.hashCode();
+        }
+    }
+
+    /**
      * Creates an immutable instance of the Filter.
      * <b>This is used by the server internally and should not be done by a plugin.</b>
      * @param chain The chain of plugins, a.k.a. event queue
@@ -56,4 +87,31 @@ public class InteractTertiaryFilter extends Filter<InteractTertiary>{
                 .tell(new InteractResult(newMessage.getPosition(), newMessage.getBlock(),
                         newMessage.getBlockAtPosition()), sender);
     }
+
+    @Override
+    public void skip(ActorRef sender) {
+        if(!getMessage().isWorldPhase()) {
+            // This handles the skip as normally
+            super.skip(sender);
+        } else {
+            // This indicates to the server that the message was skipped in the first
+            // phase and should not continue with the next phase
+            ActorRef[] chain = getChain();
+            chain[chain.length - 1].tell(new Skipped(nextFilter(EMPTY_FILTER)), sender);
+        }
+    }
+
+    @Override
+    public void skipWith(ActorRef sender, InteractTertiary newMessage) {
+        if(!getMessage().isWorldPhase()) {
+            // This handles the skip as normally
+            super.skipWith(sender, newMessage);
+        } else {
+            // This indicates to the server that the message was skipped in the first
+            // phase and should not continue with the next phase
+            ActorRef[] chain = getChain();
+            chain[chain.length - 1].tell(new Skipped(nextFilter(EMPTY_FILTER, newMessage)), sender);
+        }
+    }
+
 }
