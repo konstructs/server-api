@@ -3,10 +3,18 @@ package konstructs.api.messages;
 import akka.actor.ActorRef;
 
 /**
- * Created by petter on 2016-07-02.
+ * This class represents a {@link Filter} for the {@link Say chat messages} sent by the user.
+ * The default behaviour is for the server to forward the chat message to all connected users.
+ * @see Say
  */
 public class SayFilter extends Filter<Say>{
 
+    /**
+     * Creates an immutable instance of the Filter.
+     * <b>This is used by the server internally and should not be done by a plugin.</b>
+     * @param chain The chain of plugins, a.k.a. event queue
+     * @param message The contained message
+     */
     public SayFilter(ActorRef[] chain, Say message) {
         super(chain, message);
     }
