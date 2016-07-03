@@ -46,7 +46,7 @@ import akka.actor.ActorRef;
  * @param <T> The contained message type of the filtered event
  */
 public abstract class Filter<T> implements Serializable {
-    private static ActorRef[] EMPTY_FILTER = {};
+    protected static ActorRef[] EMPTY_FILTER = {};
 
     private final ActorRef[] chain;
     private final T message;
