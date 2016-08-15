@@ -29,7 +29,7 @@ public final class Block {
     private final UUID id;
     private final BlockTypeId type;
     private final Health health;
-
+    private final Orientation orientation;
 
     /**
      * Factory method that creates a new block with an associated random id.
@@ -80,7 +80,8 @@ public final class Block {
     }
 
     /**
-     * Constructs a immutable Block in {@link Health#PRISTINE pristine} condition.
+     * Constructs a immutable Block in {@link Health#PRISTINE pristine} condition and
+     * normal rotation.
      *
      * @param id   The ID that should be associated with the Block (may be null)
      * @param type The type of the block
@@ -90,16 +91,28 @@ public final class Block {
     }
 
     /**
-     * Constructs a immutable Block
+     * Constructs a immutable Block oriented upwards and not rotated
      *
      * @param id     The ID that should be associated with the Block (may be null)
      * @param type   The type of the block
      * @param health The health level of this block
      */
     public Block(UUID id, BlockTypeId type, Health health) {
+        this(id, type, health, Orientation.NORMAL);
+    }
+
+    /**
+     * Constructs an immutable Bloc
+     * @param id          The ID that should be associated with the Block (may be null)
+     * @param type        The type of the block
+     * @param health      The health level of this block
+     * @param orientation The orientation of this block
+     */
+    public Block(UUID id, BlockTypeId type, Health health, Orientation orientation) {
         this.id = id;
         this.type = type;
         this.health = health;
+        this.orientation = orientation;
     }
 
     /**
@@ -131,12 +144,47 @@ public final class Block {
     }
 
     /**
+     * Returns the orientation of this block.
+     * @return The orientation of this block
+     */
+    public Orientation getOrientation() {
+        return orientation;
+    }
+
+    /**
      * Returns a new block with the given ID set
      * @param id The new ID to set
      * @return The new block with the ID set
      */
     public Block withId(UUID id) {
-        return new Block(id, type, health);
+        return new Block(id, type, health, orientation);
+    }
+
+    /**
+     * Returns a new block with the given type set
+     * @param type The type to set
+     * @return The new block with the type set
+     */
+    public Block withType(BlockTypeId type) {
+        return new Block(id, type, health, orientation);
+    }
+
+    /**
+     * Returns a new block with the given health set
+     * @param health The health to set
+     * @return The new block with the ID set
+     */
+    public Block withHealth(Health health) {
+        return new Block(id, type, health, orientation);
+    }
+
+    /**
+     * Returns a new block with the given orientation
+     * @param orientation The orientation to set
+     * @return The new block with the orientation set
+     */
+    public Block withOrientation(Orientation orientation) {
+        return new Block(id, type, health, orientation);
     }
 
     @Override
@@ -148,7 +196,8 @@ public final class Block {
 
         if (id != null ? !id.equals(block.id) : block.id != null) return false;
         if (!type.equals(block.type)) return false;
-        return health != null ? health.equals(block.health) : block.health == null;
+        if (!health.equals(block.health)) return false;
+        return orientation.equals(block.orientation);
 
     }
 
@@ -156,7 +205,8 @@ public final class Block {
     public int hashCode() {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + type.hashCode();
-        result = 31 * result + (health != null ? health.hashCode() : 0);
+        result = 31 * result + health.hashCode();
+        result = 31 * result + orientation.hashCode();
         return result;
     }
 
@@ -166,7 +216,7 @@ public final class Block {
                 "id=" + id +
                 ", type=" + type +
                 ", health=" + health +
+                ", orientation=" + orientation +
                 ')';
     }
-
 }

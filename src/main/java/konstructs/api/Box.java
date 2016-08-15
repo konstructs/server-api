@@ -23,7 +23,13 @@ import java.util.Map;
  * </pre>
  * <p>
  *     To make it easier to create a Box there are a couple of factory methods like
- *     createWithSize and createAround.
+ *     {@link #create(Position, Position)}, {@link #createWithSize(Position, Position)}
+ *     and {@link #createAround(Position, Position)}.
+ * </p>
+ * <p>
+ *     {@link #create(Position, Position) Create} is of special interest since it works
+ *     in a manner more in line with a voxel world in the sense that it is inclusive of
+ *     the until coordinate.
  * </p>
  * <p>
  *     The Box also provides methods to index a one dimensional array that contains
@@ -78,6 +84,48 @@ public final class Box {
      */
     public static Box createAround(Position center, Position radi) {
         return new Box(center.subtract(radi), center.add(radi.add(Position.ONE)));
+    }
+
+    public static Box createInDirection(Position from, Direction direction, int length) {
+        return create(from, from.add(direction.getVector().multiply(length)));
+    }
+
+    /**
+     * Factory method to create a box from a certain position to a certain position
+     * To is inclusive and it is allowed to use a from that is smaller than to in
+     * any dimensions.
+     * @param from From where the box begins, inclusive
+     * @param to To where the box ends, inclusive
+     * @return The Box created
+     * @see #Box(Position, Position)
+     */
+    public static Box create(Position from, Position to) {
+        Position f = from;
+        Position t = to;
+
+        /* Swap around dimensions that are not increasing */
+        if(f.getX() > t.getX()) {
+            int fx = f.getX();
+            f = f.withX(t.getX());
+            t = t.withX(fx);
+        }
+
+        if(f.getY() > t.getY()) {
+            int fy = f.getY();
+            f = f.withY(t.getY());
+            t = t.withY(fy);
+        }
+
+        if(f.getZ() > t.getZ()) {
+            int fz = f.getZ();
+            f = f.withZ(t.getZ());
+            t = t.withZ(fz);
+        }
+
+        /* Extend end position to become inclusive */
+        t = t.add(Position.ONE);
+
+        return new Box(f, t);
     }
 
     private final Position from;

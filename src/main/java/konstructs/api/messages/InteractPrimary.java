@@ -2,6 +2,7 @@ package konstructs.api.messages;
 
 import akka.actor.ActorRef;
 import konstructs.api.Block;
+import konstructs.api.Orientation;
 import konstructs.api.Position;
 
 /**
@@ -12,6 +13,7 @@ public class InteractPrimary {
     private final ActorRef sender;
     private final String player;
     private final Position position;
+    private final Orientation orientation;
     private final Block block;
 
     /**
@@ -19,12 +21,14 @@ public class InteractPrimary {
      * @param sender The player actor that sent the interaction
      * @param player The name of the player
      * @param position The position that was pointed at (null if none)
+     * @param orientation The orientation from which the position was pointed at (null if position is null)
      * @param block The block held in the players hand (null if none)
      */
-    public InteractPrimary(ActorRef sender, String player, Position position, Block block) {
+    public InteractPrimary(ActorRef sender, String player, Position position, Orientation orientation, Block block) {
         this.sender = sender;
         this.player = player;
         this.position = position;
+        this.orientation = orientation;
         this.block = block;
     }
 
@@ -53,6 +57,15 @@ public class InteractPrimary {
     }
 
     /**
+     * Returns the orientation from which the position is interacted (if any).
+     * If position is not null orientation is always set.
+     * @return The orientation from which the position is interacted or null if no position
+     */
+    public Orientation getOrientation() {
+        return orientation;
+    }
+
+    /**
      * Returns the block held in the players hand if any
      * @return The block held in the players hand or null if none
      */
@@ -66,8 +79,9 @@ public class InteractPrimary {
      * @return The new instance with the new block set
      */
     public InteractPrimary withBlock(Block block) {
-        return new InteractPrimary(sender, player, position, block);
+        return new InteractPrimary(sender, player, position, orientation, block);
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -79,6 +93,7 @@ public class InteractPrimary {
         if (!sender.equals(that.sender)) return false;
         if (!player.equals(that.player)) return false;
         if (position != null ? !position.equals(that.position) : that.position != null) return false;
+        if (orientation != null ? !orientation.equals(that.orientation) : that.orientation != null) return false;
         return block != null ? block.equals(that.block) : that.block == null;
 
     }
@@ -88,6 +103,7 @@ public class InteractPrimary {
         int result = sender.hashCode();
         result = 31 * result + player.hashCode();
         result = 31 * result + (position != null ? position.hashCode() : 0);
+        result = 31 * result + (orientation != null ? orientation.hashCode() : 0);
         result = 31 * result + (block != null ? block.hashCode() : 0);
         return result;
     }
@@ -98,6 +114,7 @@ public class InteractPrimary {
                 "sender=" + sender +
                 ", player='" + player + '\'' +
                 ", position=" + position +
+                ", orientation=" + orientation +
                 ", block=" + block +
                 ')';
     }

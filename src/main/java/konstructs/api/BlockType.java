@@ -68,6 +68,7 @@ public final class BlockType implements Serializable {
     private final float durability;
     private final float damage;
     private final Map<BlockOrClassId, Float> damageMultipliers;
+    private final boolean orientable;
 
     /**
      * Constructs an immutable BlockType.
@@ -130,7 +131,7 @@ public final class BlockType implements Serializable {
     }
 
     /**
-     * Constructs an immutable BlockType with default durability and damage.
+     * Constructs an immutable BlockType.
      * @param faces the texture index for all faces of a BlockType
      * @param blockShape the shape of the block
      * @param obstacle is this BlockType an obstacle?
@@ -147,6 +148,28 @@ public final class BlockType implements Serializable {
      * @see #getState()
      */
     public BlockType(int[] faces, BlockShape blockShape, boolean obstacle, boolean transparent, BlockState blockState, BlockClassId[] classes, float durability, float damage, Map<BlockOrClassId, Float> damageMultipliers) {
+        this(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, false);
+    }
+
+    /**
+     * Constructs an immutable BlockType.
+     * @param faces the texture index for all faces of a BlockType
+     * @param blockShape the shape of the block
+     * @param obstacle is this BlockType an obstacle?
+     * @param transparent is this BlockType transparent?
+     * @param blockState the state of the block
+     * @param classes the list of classes for this block type
+     * @param durability the durability of this block when damaged
+     * @param damage the damage given by this block when used
+     * @param damageMultipliers the damage mutipliers whent his block is used
+     * @param orientable can this block be oriented?
+     * @see #getFaces()
+     * @see #getShape()
+     * @see #isObstacle()
+     * @see #isTransparent()
+     * @see #getState()
+     */
+    public BlockType(int[] faces, BlockShape blockShape, boolean obstacle, boolean transparent, BlockState blockState, BlockClassId[] classes, float durability, float damage, Map<BlockOrClassId, Float> damageMultipliers, boolean orientable) {
         this.faces = faces;
         this.blockShape = blockShape;
         this.obstacle = obstacle;
@@ -156,6 +179,7 @@ public final class BlockType implements Serializable {
         this.durability = durability;
         this.damage = damage;
         this.damageMultipliers = damageMultipliers;
+        this.orientable = orientable;
     }
 
     /**
@@ -268,6 +292,14 @@ public final class BlockType implements Serializable {
     }
 
     /**
+     * Is it possible to orient this block when placing it?
+     * @return True if it is possible to orient this block, or false if not
+     */
+    public boolean isOrientable() {
+        return orientable;
+    }
+
+    /**
      * Return the damage multiplier for a given block type or class ID or 1.0 if no
      * multiplier is set.
      * @param id Block type or class ID
@@ -372,7 +404,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withFaces(int[] faces) {
-        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers);
+        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable);
     }
 
     /**
@@ -385,7 +417,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withShape(String shape) {
-        return new BlockType(faces, BlockShape.fromString(shape), obstacle, transparent, blockState, classes, durability, damage, damageMultipliers);
+        return new BlockType(faces, BlockShape.fromString(shape), obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable);
     }
 
     /**
@@ -398,7 +430,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withBlockShape(BlockShape shape) {
-        return new BlockType(faces, shape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers);
+        return new BlockType(faces, shape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable);
     }
 
     /**
@@ -411,7 +443,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withObstacle(boolean obstacle) {
-        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers);
+        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable);
     }
 
     /**
@@ -424,7 +456,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withTransparent(boolean transparent) {
-        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers);
+        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable);
     }
 
     /**
@@ -437,7 +469,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withState(String state) {
-        return new BlockType(faces, blockShape, obstacle, transparent, BlockState.fromString(state), classes, durability, damage, damageMultipliers);
+        return new BlockType(faces, blockShape, obstacle, transparent, BlockState.fromString(state), classes, durability, damage, damageMultipliers, orientable);
     }
 
     /**
@@ -450,7 +482,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withBlockState(BlockState state) {
-        return new BlockType(faces, blockShape, obstacle, transparent, state, classes, durability, damage, damageMultipliers);
+        return new BlockType(faces, blockShape, obstacle, transparent, state, classes, durability, damage, damageMultipliers, orientable);
     }
 
     /**
@@ -463,7 +495,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withClasses(BlockClassId[] classes) {
-        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers);
+        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable);
     }
 
     /**
@@ -475,7 +507,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withDurability(float durability) {
-        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers);
+        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable);
     }
 
     /**
@@ -487,7 +519,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withDamage(float damage) {
-        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers);
+        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable);
     }
 
     @Override
@@ -501,6 +533,7 @@ public final class BlockType implements Serializable {
         if (transparent != blockType.transparent) return false;
         if (Float.compare(blockType.durability, durability) != 0) return false;
         if (Float.compare(blockType.damage, damage) != 0) return false;
+        if (orientable != blockType.orientable) return false;
         if (!Arrays.equals(faces, blockType.faces)) return false;
         if (!blockShape.equals(blockType.blockShape)) return false;
         if (!blockState.equals(blockType.blockState)) return false;
@@ -521,6 +554,7 @@ public final class BlockType implements Serializable {
         result = 31 * result + (durability != +0.0f ? Float.floatToIntBits(durability) : 0);
         result = 31 * result + (damage != +0.0f ? Float.floatToIntBits(damage) : 0);
         result = 31 * result + damageMultipliers.hashCode();
+        result = 31 * result + (orientable ? 1 : 0);
         return result;
     }
 
@@ -536,6 +570,7 @@ public final class BlockType implements Serializable {
                 ", durability=" + durability +
                 ", damage=" + damage +
                 ", damageMultipliers=" + damageMultipliers +
+                ", orientable=" + orientable +
                 ')';
     }
 }

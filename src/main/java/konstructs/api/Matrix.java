@@ -1,6 +1,12 @@
 package konstructs.api;
 
 public final class Matrix {
+    public static final Matrix IDENTITY =
+            new Matrix(
+              1,0,0,
+              0,1,0,
+              0,0,1
+            );
     private final int a;
     private final int b;
     private final int c;

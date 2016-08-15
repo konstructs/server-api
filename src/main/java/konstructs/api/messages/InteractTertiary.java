@@ -2,6 +2,7 @@ package konstructs.api.messages;
 
 import akka.actor.ActorRef;
 import konstructs.api.Block;
+import konstructs.api.Orientation;
 import konstructs.api.Position;
 
 /**
@@ -21,6 +22,7 @@ public class InteractTertiary {
     private final ActorRef sender;
     private final String player;
     private final Position position;
+    private final Orientation orientation;
     private final Block block;
     private final Block blockAtPosition;
     private final boolean worldPhase;
@@ -30,14 +32,16 @@ public class InteractTertiary {
      * @param sender The player actor that sent the interaction
      * @param player The name of the player
      * @param position The position that was pointed at (null if none)
+     * @param orientation The orientation from which the position was pointed at (null if position is null)
      * @param block The block held in the players hand (null if none)
      * @param blockAtPosition The block at the position pointed at (null if none)
      * @param worldPhase Is this event sent in the world phase or the block held phase
      */
-    public InteractTertiary(ActorRef sender, String player, Position position, Block block, Block blockAtPosition, boolean worldPhase) {
+    public InteractTertiary(ActorRef sender, String player, Position position, Orientation orientation, Block block, Block blockAtPosition, boolean worldPhase) {
         this.sender = sender;
         this.player = player;
         this.position = position;
+        this.orientation = orientation;
         this.block = block;
         this.blockAtPosition = blockAtPosition;
         this.worldPhase = worldPhase;
@@ -76,6 +80,15 @@ public class InteractTertiary {
     }
 
     /**
+     * Returns the orientation from which the position is interacted (if any).
+     * If position is not null orientation is always set.
+     * @return The orientation from which the position is interacted or null if no position
+     */
+    public Orientation getOrientation() {
+        return orientation;
+    }
+
+    /**
      * Returns the block at the {@link #getPosition() position} pointed at (if any)
      * @return The block pointed at or null if none
      */
@@ -98,7 +111,7 @@ public class InteractTertiary {
      * @return The new instance with the new block set
      */
     public InteractTertiary withBlock(Block block) {
-        return new InteractTertiary(sender, player, position, block, blockAtPosition, worldPhase);
+        return new InteractTertiary(sender, player, position, orientation, block, blockAtPosition, worldPhase);
     }
 
     /**
@@ -107,7 +120,7 @@ public class InteractTertiary {
      * @return The new instance with the new block set
      */
     public InteractTertiary withBlockAtPosition(Block blockAtPosition) {
-        return new InteractTertiary(sender, player, position, block, blockAtPosition, worldPhase);
+        return new InteractTertiary(sender, player, position, orientation, block, blockAtPosition, worldPhase);
     }
 
     /**
@@ -116,7 +129,7 @@ public class InteractTertiary {
      * @return The new instance with the new worldPhase set
      */
     public InteractTertiary withWorldPhase(boolean worldPhase) {
-        return new InteractTertiary(sender, player, position, block, blockAtPosition, worldPhase);
+        return new InteractTertiary(sender, player, position, orientation, block, blockAtPosition, worldPhase);
     }
 
     @Override
@@ -130,6 +143,7 @@ public class InteractTertiary {
         if (!sender.equals(that.sender)) return false;
         if (!player.equals(that.player)) return false;
         if (position != null ? !position.equals(that.position) : that.position != null) return false;
+        if (orientation != null ? !orientation.equals(that.orientation) : that.orientation != null) return false;
         if (block != null ? !block.equals(that.block) : that.block != null) return false;
         return blockAtPosition != null ? blockAtPosition.equals(that.blockAtPosition) : that.blockAtPosition == null;
 
@@ -140,6 +154,7 @@ public class InteractTertiary {
         int result = sender.hashCode();
         result = 31 * result + player.hashCode();
         result = 31 * result + (position != null ? position.hashCode() : 0);
+        result = 31 * result + (orientation != null ? orientation.hashCode() : 0);
         result = 31 * result + (block != null ? block.hashCode() : 0);
         result = 31 * result + (blockAtPosition != null ? blockAtPosition.hashCode() : 0);
         result = 31 * result + (worldPhase ? 1 : 0);
@@ -152,6 +167,7 @@ public class InteractTertiary {
                 "sender=" + sender +
                 ", player='" + player + '\'' +
                 ", position=" + position +
+                ", orientation=" + orientation +
                 ", block=" + block +
                 ", blockAtPosition=" + blockAtPosition +
                 ", worldPhase=" + worldPhase +

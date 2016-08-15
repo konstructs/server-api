@@ -13,6 +13,13 @@ package konstructs.api;
  */
 public final class Position {
     public final static Position ONE = new Position(1, 1, 1);
+    public final static Position UP = new Position(0, 1, 0);
+    public final static Position DOWN = new Position(0, -1, 0);
+    public final static Position RIGHT = new Position(1, 0, 0);
+    public final static Position LEFT = new Position(-1, 0, 0);
+    public final static Position FORWARD = new Position(0, 0, 1);
+    public final static Position BACKWARD = new Position(0, 0, -1);
+
     private final int x;
     private final int y;
     private final int z;
@@ -47,6 +54,15 @@ public final class Position {
      */
     public Position subtract(Position position) {
         return new Position(x - position.getX(), y - position.getY(), z - position.getZ());
+    }
+
+    /**
+     * Multiply all dimensions with a scalar and return a new position
+     * @param scalar The scalar to multiply with
+     * @return The new position
+     */
+    public Position multiply(int scalar) {
+        return new Position(x * scalar, y * scalar, z * scalar);
     }
 
     /**
