@@ -1,5 +1,10 @@
 package konstructs.api;
 
+/**
+ * Rotation is a class that represents a rotation. A block placed in a specific {@link Direction direction}
+ * can have one of four rotations. You can think of a dice placed with the 1 side pointing upwards. It
+ * can have either 2, 3, 4 or 5 pointing forwards, while 1 side is still pointing upwards,
+ */
 public class Rotation {
     public static final int IDENTITY_ENCODING = 0;
     public static final int LEFT_ENCODING = 1;
@@ -23,6 +28,11 @@ public class Rotation {
      */
     public static final Rotation HALF = new Rotation(HALF_ENCODING);
 
+    /**
+     * Returns the Orientation associated the provided encoding
+     * @param encoding The encoded value of the orientation
+     * @return The singleton instance of the Orientation
+     */
     public static Rotation get(int encoding) {
         switch(encoding) {
             case IDENTITY_ENCODING:
@@ -65,6 +75,11 @@ public class Rotation {
                     +0, +0, -1
             );
 
+    /**
+     * Returns a matrix representing this rotation.
+     * This matrix can be used to rotate a vector.
+     * @return The rotation matrix of this rotation.
+     */
     public Matrix getMatrix() {
         switch(encoding) {
             case IDENTITY_ENCODING:
@@ -80,7 +95,34 @@ public class Rotation {
         }
     }
 
+    /**
+     * Returns the integer encoding of this rotation
+     * @return The integer encoding
+     */
     public int getEncoding() {
         return encoding;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Rotation rotation = (Rotation) o;
+
+        return encoding == rotation.encoding;
+
+    }
+
+    @Override
+    public int hashCode() {
+        return encoding;
+    }
+
+    @Override
+    public String toString() {
+        return "Rotation(" +
+                "encoding=" + encoding +
+                ')';
     }
 }
