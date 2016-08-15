@@ -151,7 +151,7 @@ public final class BlockType implements Serializable {
         this(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, false);
     }
 
-        /**
+    /**
      * Constructs an immutable BlockType.
      * @param faces the texture index for all faces of a BlockType
      * @param blockShape the shape of the block
