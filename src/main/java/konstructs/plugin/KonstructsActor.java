@@ -1,6 +1,6 @@
 package konstructs.plugin;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -169,4 +169,11 @@ public abstract class KonstructsActor extends UntypedActorWithStash {
                 to, obj, getContext().system().dispatcher(), null);
     }
 
+    public static <T> java.util.List<T> nullAsEmpty(java.util.List<T> list) {
+        if(list == null) {
+            return Collections.emptyList();
+        } else {
+            return list;
+        }
+    }
 }
