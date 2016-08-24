@@ -86,7 +86,7 @@ public class InclusiveBox implements BoxShape {
     /**
      * Returns an array index for a position relative to start
      * @param position The requested position, relative to start
-     * @return
+     * @return The array index
      */
     public int arrayIndexLocal(Position position) {
         return box.arrayIndex(start.add(position));

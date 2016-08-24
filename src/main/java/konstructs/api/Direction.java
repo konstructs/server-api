@@ -191,15 +191,7 @@ public class Direction {
                     +0, +0, +1
             );
 
-    /* Rotate -90 degree over z axis so that UP is pointing LEFT */
-    private static final Matrix LEFT_ROTATION =
-            new Matrix(
-                    +0, +1, +0,
-                    -1, +0, +0,
-                    +0, +0, +1
-            );
-
-    /* Rotate +90 degree over z axis so that UP is pointing RIGHT */
+    /* Rotate -90 degree over z axis so that UP is pointing RIGHT */
     private static final Matrix RIGHT_ROTATION =
             new Matrix(
                     +0, -1, +0,
@@ -207,17 +199,25 @@ public class Direction {
                     +0, +0, +1
             );
 
+    /* Rotate +90 degree over z axis so that UP is pointing LEFT */
+    private static final Matrix LEFT_ROTATION =
+            new Matrix(
+                    +0, +1, +0,
+                    -1, +0, +0,
+                    +0, +0, +1
+            );
 
-    /* Rotate -90 degree over x axis so that UP is pointing FORWARD */
-    private static final Matrix FORWARD_ROTATION =
+
+    /* Rotate -90 degree over x axis so that UP is pointing BACKWARD */
+    private static final Matrix BACKWARD_ROTATION =
             new Matrix(
                     +1, +0, +0,
                     +0, +0, +1,
                     +0, -1, +0
             );
 
-    /* Rotate 90 degree over x axis so that UP is pointing BACKWARD */
-    private static final Matrix BACKWARD_ROTATION =
+    /* Rotate 90 degree over x axis so that UP is pointing FORWARD */
+    private static final Matrix FORWARD_ROTATION =
             new Matrix(
                     +1, +0, +0,
                     +0, +0, -1,
@@ -246,6 +246,30 @@ public class Direction {
                 throw new IllegalArgumentException("Invalid direction encoding");
         }
     }
+
+    /**
+     * Returns the inverse of the rotation matrix related to this direction
+     * @return The inverse of the related rotation matrix
+     */
+    public Matrix getInverseRotationMatrix() {
+        switch(encoding) {
+            case UP_ENCODING:
+                return Matrix.IDENTITY;
+            case DOWN_ENCODING:
+                return DOWN_ROTATION;
+            case LEFT_ENCODING:
+                return RIGHT_ROTATION;
+            case RIGHT_ENCODING:
+                return LEFT_ROTATION;
+            case BACKWARD_ENCODING:
+                return FORWARD_ROTATION;
+            case FORWARD_ENCODING:
+                return BACKWARD_ROTATION;
+            default:
+                throw new IllegalArgumentException("Invalid direction encoding");
+        }
+    }
+
 
     /**
      * Returns the string encoding of this direction

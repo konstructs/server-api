@@ -61,22 +61,22 @@ public class Rotation {
 
     private static final Matrix LEFT_ROTATION =
             new Matrix(
-                    +1, +0, +0,
                     +0, +0, +1,
-                    +0, -1, +0
+                    +0, +1, +0,
+                    -1, +0, +0
             );
 
     private static final Matrix RIGHT_ROTATION =
             new Matrix(
-                    +1, +0, +0,
                     +0, +0, -1,
-                    +0, +1, +0
+                    +0, +1, +0,
+                    +1, +0, +0
             );
 
     private static final Matrix HALF_ROTATION =
             new Matrix(
-                    +1, +0, +0,
-                    +0, -1, +0,
+                    -1, +0, +0,
+                    +0, +1, +0,
                     +0, +0, -1
             );
 
@@ -93,6 +93,26 @@ public class Rotation {
                 return LEFT_ROTATION;
             case RIGHT_ENCODING:
                 return RIGHT_ROTATION;
+            case HALF_ENCODING:
+                return HALF_ROTATION;
+            default:
+                throw new IllegalStateException("Rotation invalidly encoded!");
+        }
+    }
+
+    /**
+     * Returns the inverse of a matrix representing this rotation.
+     * This matrix can be used to rotate a vector.
+     * @return The inverse of a rotation matrix of this rotation.
+     */
+    public Matrix getInverseMatrix() {
+        switch(encoding) {
+            case IDENTITY_ENCODING:
+                return Matrix.IDENTITY;
+            case LEFT_ENCODING:
+                return RIGHT_ROTATION;
+            case RIGHT_ENCODING:
+                return LEFT_ROTATION;
             case HALF_ENCODING:
                 return HALF_ROTATION;
             default:

@@ -17,8 +17,8 @@ public final class Position {
     public final static Position DOWN = new Position(0, -1, 0);
     public final static Position RIGHT = new Position(1, 0, 0);
     public final static Position LEFT = new Position(-1, 0, 0);
-    public final static Position FORWARD = new Position(0, 0, 1);
-    public final static Position BACKWARD = new Position(0, 0, -1);
+    public final static Position FORWARD = new Position(0, 0, -1);
+    public final static Position BACKWARD = new Position(0, 0, 1);
 
     private final int x;
     private final int y;

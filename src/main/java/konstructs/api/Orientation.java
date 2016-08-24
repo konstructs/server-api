@@ -58,24 +58,42 @@ public class Orientation {
     }
 
     /**
-     * Return the rotation matrix of this orientation.
-     * This matrix rotates a vector in relation to both the direction and rotation of this orientation
+     * Return the rotation matrix of this orientation for finding a face pointed at.
+     * This matrix rotates a vector in relation to both the direction and rotation of this orientation in a way that
+     * the direction pointed at by the user is translated into the direction of the face pointed at.
      * @return The rotation matrix
      */
-    public Matrix getRotationMatrix() {
-        return direction.getRotationMatrix().multiply(rotation.getMatrix());
+    public Matrix getFacePointedAtRotationMatrix() {
+        return rotation.getMatrix().multiply(direction.getRotationMatrix());
     }
 
     /**
-     * Translate (rotate) a direction using this orientation.
-     * If the direction is seen as a face, then this method returns the direction of the face translated
-     * by this orientation. E.g. if passed the upward direction and the orientation has a direction of downward
-     * the direction downward will be returned.
+     * Return the rotation matrix of this orientation for finding the direction a face is pointing in.
+     * This matrix rotates a vector in relation to both the direction and rotation of this orientation in a way that
+     * the direction the face pointing is translated into the direction of the face that is pointing in this direction.
+     * @return The rotation matrix
+     */
+    public Matrix getFacePointingInRotationMatrix() {
+        return direction.getInverseRotationMatrix().multiply(rotation.getInverseMatrix());
+    }
+
+    /**
+     * Translate (rotate) a face pointed at using this orientation.
+     * If the direction is seen as a face pointed at, then this method returns the direction of the face translated
+     * by this orientation. E.g. if passed the upward direction (block was pointed at from above) and the orientation
+     * has a direction of downward then face downward will be returned, since it is pointing up.
+     *
+     * This means that this method can be used when one want to know which face that was interacted with when a block
+     * is rotated.
      * @param dir The direction to be translated
      * @return The translated direction
      */
-    public Direction translateDirection(Direction dir) {
-        return Direction.get(getRotationMatrix().multiply(dir.getVector()));
+    public Direction translateFacePointedAt(Direction dir) {
+        return Direction.get(getFacePointedAtRotationMatrix().multiply(dir.getVector()));
+    }
+
+    public Direction translateFacePointingIn(Direction dir) {
+        return Direction.get(getFacePointingInRotationMatrix().multiply(dir.getVector()));
     }
 
     @Override
