@@ -247,6 +247,29 @@ public class Direction {
         }
     }
 
+    /**
+     * Returns the string encoding of this direction
+     * @return String encoding
+     */
+    public String getStringEncoding() {
+        switch(encoding) {
+            case UP_ENCODING:
+                return UP_STRING_ENCODING;
+            case DOWN_ENCODING:
+                return DOWN_STRING_ENCODING;
+            case LEFT_ENCODING:
+                return LEFT_STRING_ENCODING;
+            case RIGHT_ENCODING:
+                return RIGHT_STRING_ENCODING;
+            case BACKWARD_ENCODING:
+                return BACKWARD_STRING_ENCODING;
+            case FORWARD_ENCODING:
+                return FORWARD_STRING_ENCODING;
+            default:
+                throw new IllegalArgumentException("Invalid direction encoding");
+        }
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -266,7 +289,7 @@ public class Direction {
     @Override
     public String toString() {
         return "Direction(" +
-                "encoding=" + encoding +
+                "encoding=" + getStringEncoding() + "[" + encoding + "]" +
                 ')';
     }
 }
