@@ -16,7 +16,9 @@ import java.util.Map;
  * be used to inspect the result (internally using the Box class).
  *
  * @see Box
+ * @deprecated This class is deprecated as of 0.1.16, use {@link BoxShapeQueryResult} instead.
  */
+@Deprecated
 public class BoxQueryResult {
     private final Box box;
     private final BlockTypeId blocks[];

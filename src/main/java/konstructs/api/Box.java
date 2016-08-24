@@ -22,14 +22,9 @@ import java.util.Map;
  *     (0,0)   (1,0)   (2,0)   (3,0)
  * </pre>
  * <p>
- *     To make it easier to create a Box there are a couple of factory methods like
- *     {@link #create(Position, Position)}, {@link #createWithSize(Position, Position)}
- *     and {@link #createAround(Position, Position)}.
- * </p>
- * <p>
- *     {@link #create(Position, Position) Create} is of special interest since it works
- *     in a manner more in line with a voxel world in the sense that it is inclusive of
- *     the until coordinate.
+ *     To make it easier to create a Box there are a couple of classes extending this class;
+ *     {@link BoxAround#BoxAround(Position, Position)}, {@link InclusiveBox#InclusiveBox(Position, Position)},
+ *     {@link DirectionalLine#DirectionalLine(Position, Direction, int)}
  * </p>
  * <p>
  *     The Box also provides methods to index a one dimensional array that contains
@@ -59,12 +54,11 @@ import java.util.Map;
  *     get and getLocal, by taking the array as an argument the provide a simple way
  *     to directly get data from an array using a local or global position.
  * </p>
- * @see #createAround(Position, Position)
  * @see #createWithSize(Position, Position)
  * @see #get(Position, Object[])
  * @see #getLocal(Position, Object[])
  */
-public final class Box {
+public class Box implements BoxShape {
     /**
      * Factory method for creating a Box with a given size.
      * @param from The from corner of the Box
@@ -81,13 +75,12 @@ public final class Box {
      * @param radi The number of blocks the box extends in each dimension
      * @return The new Box bounding the are around the center with radi
      *         number of blocks in both directions in each dimension
+     * @deprecated As of 0.1.15, use {@link BoxAround} instead
+     *             (this method now returns an instance of {@link BoxAround}).
      */
+    @Deprecated
     public static Box createAround(Position center, Position radi) {
-        return new Box(center.subtract(radi), center.add(radi.add(Position.ONE)));
-    }
-
-    public static Box createInDirection(Position from, Direction direction, int length) {
-        return create(from, from.add(direction.getVector().multiply(length)));
+        return new BoxAround(center, radi).getBox();
     }
 
     /**
@@ -98,34 +91,12 @@ public final class Box {
      * @param to To where the box ends, inclusive
      * @return The Box created
      * @see #Box(Position, Position)
+     * @deprecated As of 0.1.15, use {@link InclusiveBox} instead
+     *             (this method now returns an instance of {@link InclusiveBox}).
      */
+    @Deprecated
     public static Box create(Position from, Position to) {
-        Position f = from;
-        Position t = to;
-
-        /* Swap around dimensions that are not increasing */
-        if(f.getX() > t.getX()) {
-            int fx = f.getX();
-            f = f.withX(t.getX());
-            t = t.withX(fx);
-        }
-
-        if(f.getY() > t.getY()) {
-            int fy = f.getY();
-            f = f.withY(t.getY());
-            t = t.withY(fy);
-        }
-
-        if(f.getZ() > t.getZ()) {
-            int fz = f.getZ();
-            f = f.withZ(t.getZ());
-            t = t.withZ(fz);
-        }
-
-        /* Extend end position to become inclusive */
-        t = t.add(Position.ONE);
-
-        return new Box(f, t);
+        return new InclusiveBox(from, to).getBox();
     }
 
     private final Position from;
@@ -135,15 +106,13 @@ public final class Box {
     /**
      * Constructs an immutable Box.
      * <p>
-     *     Note: There are a couple of factory methods as well like
-     *     createWithSize and createAround.
-     * </p>
-     * <p>
      *     Note: From must be smaller than until in all dimensions.
      * </p>
      * @param from The starting corner of the bounding box, inclusive
      * @param until The end corner of the bounding box, exclusive
-     * @see #createAround(Position, Position)
+     * @see InclusiveBox
+     * @see BoxAround
+     * @see DirectionalLine
      * @see #createWithSize(Position, Position)
      */
     public Box(Position from, Position until) {
@@ -208,6 +177,14 @@ public final class Box {
         return arrayIndexLocal(p.subtract(from));
     }
 
+    public Position arrayIndexAsPosition(int index) {
+        int x = index / (size.getY() * size.getZ());
+        index -= x * size.getY() * size.getZ();
+        int y = index / size.getZ();
+        int z = index - (y * size.getZ());
+        return from.add(new Position(x, y, z));
+    }
+
     /**
      * Return an element of blocks based on the position p
      * @param p A Position that is withing the bounds of this box
@@ -257,6 +234,11 @@ public final class Box {
      */
     public int getNumberOfBlocks() {
         return size.getX() * size.getY() * size.getZ();
+    }
+
+    @Override
+    public Box getBox() {
+        return this;
     }
 
     @Override

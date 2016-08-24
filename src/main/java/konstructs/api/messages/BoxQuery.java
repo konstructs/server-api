@@ -7,7 +7,9 @@ import konstructs.api.Box;
  * blocks. The volume is defined by the Box class. Please see the documentation
  * of the Box class for details on how it works.
  * @see Box
+ * @deprecated This class is deprecated as of 0.1,16, use {@link BoxShapeQuery} instead.
  */
+@Deprecated
 public class BoxQuery {
     private final Box box;
 

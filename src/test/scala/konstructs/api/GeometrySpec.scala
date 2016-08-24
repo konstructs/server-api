@@ -2,31 +2,29 @@ package konstructs.api
 
 import org.scalatest.{ Matchers, WordSpec }
 
-import konstructs.api._
-
 class GeometrySpec extends WordSpec with Matchers {
 
 
   "A Box" should {
 
     "return box Position(0,0,0) until Position(2,2,2) when create(Position(1,1,1), Position(0,0,0))" in {
-      Box.create(new Position(1,1,1), new Position(0,0,0)) shouldEqual new Box(new Position(0,0,0), new Position(2,2,2))
+      new InclusiveBox(new Position(1,1,1), new Position(0,0,0)).getBox shouldEqual new Box(new Position(0,0,0), new Position(2,2,2))
     }
 
     "return box Position(0,0,0) until Position(1,1,2) when create(Position(0,0,1), Position(0,0,0))" in {
-      Box.create(new Position(0,0,1), new Position(0,0,0)) shouldEqual new Box(new Position(0,0,0), new Position(1,1,2))
+      new InclusiveBox(new Position(0,0,1), new Position(0,0,0)).getBox shouldEqual new Box(new Position(0,0,0), new Position(1,1,2))
     }
 
     "have 2 blocks when create(Position(0,0,1), Position(0,0,0))" in {
-      Box.create(new Position(0,0,1), new Position(0,0,0)).getNumberOfBlocks shouldEqual 2
+      new InclusiveBox(new Position(0,0,1), new Position(0,0,0)).getBox.getNumberOfBlocks shouldEqual 2
     }
 
     "have 27 blocks when create(Position(-1,1,-1), Position(1,-1,1))" in {
-      Box.create(new Position(-1,1,-1), new Position(1,-1,1)).getNumberOfBlocks shouldEqual 27
+      new InclusiveBox(new Position(-1,1,-1), new Position(1,-1,1)).getBox.getNumberOfBlocks shouldEqual 27
     }
 
-    "return box Position(-2,-20,-2) until Position(-1,1,-1) when createInDirection(Position(-2,0,-2), Direction.DOWN, 20)" in {
-      Box.createInDirection(new Position(-2, 0, -2), Direction.DOWN, 20) shouldEqual new Box(new Position(-2,-20,-2), new Position(-1,1,-1))
+    "return box Position(-2,-20,-2) until Position(-1,1,-1) when DirectionalLine(Position(-2,0,-2), Direction.DOWN, 20)" in {
+      new DirectionalLine(new Position(-2, 0, -2), Direction.DOWN, 20).getBox shouldEqual new Box(new Position(-2,-20,-2), new Position(-1,1,-1))
     }
 
     "contain 0, 0, 0 in (-32, 0, -32) (32, 0, 32)" in {
