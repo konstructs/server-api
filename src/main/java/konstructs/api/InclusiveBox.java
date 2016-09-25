@@ -4,7 +4,12 @@ package konstructs.api;
  * Class that represents a {@link Box box} starting at a certain position and
  * ending at another certain position.
  * It differs from {@link Box box} (which it also extends) in the sense that
- * end is inclusive and start maybe be smaller than end in all dimensions.
+ * end is inclusive and start may be smaller than end in all dimensions.
+ *
+ * Basically it allows all positions for both start and end (without the limitations
+ * imposed by {@link Box}) and treats end inclusive, making the box include also the
+ * block at position end. This means that this class is slightly more intuitive than
+ * {@link Box} for some use cases.
  *
  */
 

@@ -40,10 +40,19 @@ public class EventTypeId {
         this.name = name;
     }
 
+    /**
+     * Returns the namespace of this EventTypeId
+     * @return the namespace
+     * @see BlockClassId
+     */
     public String getNamespace() {
         return namespace;
     }
 
+    /**
+     * Returns the name of this EventTypeId
+     * @return the name
+     */
     public String getName() {
         return name;
     }

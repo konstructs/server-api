@@ -177,6 +177,12 @@ public class Box implements BoxShape {
         return arrayIndexLocal(p.subtract(from));
     }
 
+    /**
+     * Return the global position that corresponds to the given array index.
+     * This is the reverse of {@link #arrayIndex(Position)}.
+     * @param index The array index
+     * @return The global position of the array index
+     */
     public Position arrayIndexAsPosition(int index) {
         int x = index / (size.getY() * size.getZ());
         index -= x * size.getY() * size.getZ();

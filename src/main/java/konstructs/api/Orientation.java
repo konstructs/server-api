@@ -1,7 +1,7 @@
 package konstructs.api;
 
 /**
- * Orientation is a class that represents a orientation of a block. An orientation is a combination
+ * Orientation is a class that represents an orientation of a block. An orientation is a combination
  * of a {@link Direction direction} and a {@link Rotation rotation}. Together they represent any possible
  * orientation that a block can have,
  */
@@ -62,6 +62,7 @@ public class Orientation {
      * This matrix rotates a vector in relation to both the direction and rotation of this orientation in a way that
      * the direction pointed at by the user is translated into the direction of the face pointed at.
      * @return The rotation matrix
+     * @see #translateFacePointedAt(Direction) for a usage example
      */
     public Matrix getFacePointedAtRotationMatrix() {
         return rotation.getMatrix().multiply(direction.getRotationMatrix());
@@ -72,6 +73,7 @@ public class Orientation {
      * This matrix rotates a vector in relation to both the direction and rotation of this orientation in a way that
      * the direction the face pointing is translated into the direction of the face that is pointing in this direction.
      * @return The rotation matrix
+     * @see #translateFacePointingIn(Direction) for a usage example
      */
     public Matrix getFacePointingInRotationMatrix() {
         return direction.getInverseRotationMatrix().multiply(rotation.getInverseMatrix());
@@ -92,6 +94,16 @@ public class Orientation {
         return Direction.get(getFacePointedAtRotationMatrix().multiply(dir.getVector()));
     }
 
+    /**
+     * Translate (rotate) a face pointing in a certain direction using this orientation.
+     * If the direction is the direction a certain face of a block is pointing towards in the normal
+     * (not rotated) case, e.g. a the direction of the beam from a light, then the translated direction is
+     * the direction the face is pointing towards after the block was rotated. In the example, by knowing
+     * in which direction the light is normally heading, then this function provides the direction of the light
+     * after the block was rotated.
+     * @param dir The direction of the face in the original rotation
+     * @return The direction of the face after the block was rotated
+     */
     public Direction translateFacePointingIn(Direction dir) {
         return Direction.get(getFacePointingInRotationMatrix().multiply(dir.getVector()));
     }
