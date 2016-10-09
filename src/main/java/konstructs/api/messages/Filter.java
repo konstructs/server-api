@@ -146,7 +146,7 @@ public abstract class Filter<T> implements Serializable {
 
     @Override
     public String toString() {
-        /* getClass().getName() was added to print the name of the implementing class */
+        /* getClass().getId() was added to print the name of the implementing class */
         return getClass().getName() + "(" +
                 "chain=" + Arrays.toString(chain) +
                 ", message=" + message +

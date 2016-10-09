@@ -1,6 +1,6 @@
 package konstructs.plugin;
 
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -43,6 +43,12 @@ public abstract class KonstructsActor extends UntypedActorWithStash {
             return;
         }
 
+        if (message instanceof BoxShapeQueryResult) {
+            BoxShapeQueryResult result = (BoxShapeQueryResult)message;
+            onBoxShapeQueryResult(result);
+            return;
+        }
+
         if (message instanceof GlobalConfig) {
             GlobalConfig config = (GlobalConfig)message;
             onGlobalConfig(config);
@@ -77,6 +83,15 @@ public abstract class KonstructsActor extends UntypedActorWithStash {
     }
 
     /**
+     * This function is called when we receive a BoxShapeQueryResult
+     * @param result The BoxShapeQueryResult message received
+     */
+    public void onBoxShapeQueryResult(BoxShapeQueryResult result) {
+        unhandled(result);
+    }
+
+
+    /**
      * Called when a block is updated/created
      * @param event The block event
      */
@@ -100,11 +115,32 @@ public abstract class KonstructsActor extends UntypedActorWithStash {
         universe.tell(new ViewBlock(p), getSelf());
     }
 
+    /**
+     * Query for a box of blocks
+     * @param box The box to query for
+     * @deprecated Deprecated as of 0.1.16, use {@link #boxShapeQuery(BoxShape)} instead
+     */
+    @Deprecated
+    public void boxQuery(Box box) {
+        universe.tell(new BoxQuery(box), getSelf());
+    }
+
     /** Query for a box of blocks
      *  @param box The box to query for
      */
-    public void boxQuery(Box box) {
-        universe.tell(new BoxQuery(box), getSelf());
+    public void boxShapeQuery(BoxShape box) {
+        universe.tell(new BoxShapeQuery(box), getSelf());
+    }
+
+    /**
+     * Replace a block that matches a filter
+     * As a response the plugin will receive the {@link ReplaceBlockResult} message.
+     * @param filter The filter to match
+     * @param position The position in the world to be replaced
+     * @param block The block to replace it with
+     */
+    public void replaceBlock(BlockFilter filter, Position position, Block block) {
+        getUniverse().tell(new ReplaceBlock(filter, position, block), getSelf());
     }
 
     /**
@@ -169,4 +205,11 @@ public abstract class KonstructsActor extends UntypedActorWithStash {
                 to, obj, getContext().system().dispatcher(), null);
     }
 
+    public static <T> java.util.List<T> nullAsEmpty(java.util.List<T> list) {
+        if(list == null) {
+            return Collections.emptyList();
+        } else {
+            return list;
+        }
+    }
 }

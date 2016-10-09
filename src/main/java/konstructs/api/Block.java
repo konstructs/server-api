@@ -133,6 +133,15 @@ public final class Block {
     }
 
     /**
+     * Return whether this block is of the given type
+     * @param typeId The type id to check against
+     * @return true if this block is of the given type, otherwise false
+     */
+    public boolean isType(BlockTypeId typeId) {
+        return type.equals(typeId);
+    }
+
+    /**
      * Returns the health level of this block.
      *
      * @return The health level of this block
