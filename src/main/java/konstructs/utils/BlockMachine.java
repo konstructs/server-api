@@ -83,6 +83,9 @@ import konstructs.api.BlockTypeId;
  *     <li>
  *         <code>1</code> all blocks of the brush are perfectly drawn
  *     </li>
+ *     <li>
+ *         <code>_</code> move forward by step without applying the brush
+ *     </li>
  * </ul>
  * <p>
  * These commands changes the BlockMachines direction relative to the current direction. Just like if you
@@ -314,7 +317,7 @@ public final class BlockMachine {
      */
     public Map<Position, BlockTypeId> interpret(String program, Position initPos, Direction initDir, int initRadius,
                                                 int initStep, int initBrush) {
-        return interpret(program, initPos, initDir, initRadius, initStep, initBrush, 0);
+        return interpret(program, initPos, initDir, initRadius, initStep, initBrush, 10);
     }
 
     /**
@@ -326,12 +329,12 @@ public final class BlockMachine {
      * @param initRadius The initial (and minimum) radius of the brush
      * @param initStep The initial (and minimal) stepping distance between block placements
      * @param initBrush The initial brush to use {@link #CUBE} or {@link #SPHERE}
-     * @param initImperfection The intial and default imperfection. One block per number given here is
-     *                         randomly selected to be excluded from the brush's outer layers
+     * @param imperfectionFactor The imperfection to be applied. One block per number given here is
+     *                           randomly selected to be excluded from the brush's outer layers
      * @return The result of the program as a Position to BlockTypeId map
      */
     public Map<Position, BlockTypeId> interpret(String program, Position initPos, Direction initDir, int initRadius,
-                                                int initStep, int initBrush, int initImperfection) {
+                                                int initStep, int initBrush, int imperfectionFactor) {
         Random random = new Random();
         Stack<StackData> stack = new Stack<>();
         Map<Position, BlockTypeId> blocks = new HashMap<>();
@@ -341,7 +344,7 @@ public final class BlockMachine {
         int radius = initRadius;
         int step = initStep;
         int brush = initBrush;
-        int imperfection = initImperfection;
+        int imperfection = 0;
 
         final int len = program.length();
         for (int i = 0; i < len; i++) {
@@ -406,34 +409,37 @@ public final class BlockMachine {
                     brush = CUBE;
                     break;
                 case '½':
-                    imperfection = initImperfection;
+                    imperfection = imperfectionFactor;
                     break;
                 case '1':
                     imperfection = 0;
                     break;
+                case '_':
+                    pos = pos.add(dir.getAdg().multiply(step));
+                    break;
                 default:
                     if(overwrite || !blocks.containsKey(pos)) {
                         BlockTypeId type = alphabet.get(c);
-                        if(type != null) {
-                            for (int x = -radius; x <= radius; x++) {
-                                for (int y = -radius; y <= radius; y++) {
-                                    for (int z = -radius; z <= radius; z++) {
-                                        if (brush == SPHERE) {
-                                            double r = Math.sqrt(x * x + y * y + z * z + 1);
-                                            if (r > (double) radius)
-                                                continue;
-                                            if (imperfection != 0 && r > radius - 1 && random.nextInt(imperfection) == 0)
-                                                continue;
-                                        } else {
-                                            if (imperfection != 0
-                                                    && (x >= radius - 1 || y >= radius - 1 || z >= radius - 1
-                                                    || x <= -radius + 1 || y <= -radius + 1 || z <= -radius + 1)
-                                                    && random.nextInt(imperfection) == 0)
-                                                continue;
-                                        }
-                                        Position offset = new Position(x, y, z);
-                                        blocks.put(pos.add(offset), type);
+                        if(type == null)
+                            type = BlockTypeId.VACUUM;
+                        for (int x = -radius; x <= radius; x++) {
+                            for (int y = -radius; y <= radius; y++) {
+                                for (int z = -radius; z <= radius; z++) {
+                                    if (brush == SPHERE) {
+                                        double r = Math.sqrt(x * x + y * y + z * z + 1);
+                                        if (r > (double) radius)
+                                            continue;
+                                        if (imperfection != 0 && r > radius - 1 && random.nextInt(imperfection) == 0)
+                                            continue;
+                                    } else {
+                                        if (imperfection != 0
+                                                && (x >= radius - 1 || y >= radius - 1 || z >= radius - 1
+                                                || x <= -radius + 1 || y <= -radius + 1 || z <= -radius + 1)
+                                                && random.nextInt(imperfection) == 0)
+                                            continue;
                                     }
+                                    Position offset = new Position(x, y, z);
+                                    blocks.put(pos.add(offset), type);
                                 }
                             }
                         }
