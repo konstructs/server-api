@@ -243,13 +243,15 @@ public final class BlockMachine {
         final int radius;
         final int step;
         final int brush;
+        final int imperfection;
 
-        public StackData(Position position, Matrix direction, int radius, int step, int brush) {
+        public StackData(Position position, Matrix direction, int radius, int step, int brush, int imperfection) {
             this.position = position;
             this.direction = direction;
             this.radius = radius;
             this.step = step;
             this.brush = brush;
+            this.imperfection = imperfection;
         }
     }
 
@@ -369,7 +371,7 @@ public final class BlockMachine {
                     dir = dir.multiply(ROLL_RIGHT);
                     break;
                 case '[':
-                    stack.push(new StackData(pos, dir, radius, step, brush));
+                    stack.push(new StackData(pos, dir, radius, step, brush, imperfection));
                     break;
                 case ']':
                     StackData old = stack.pop();
@@ -378,6 +380,7 @@ public final class BlockMachine {
                     radius = old.radius;
                     step = old.step;
                     brush = old.brush;
+                    imperfection = old.imperfection;
                     break;
                 case '¤':
                     radius = radius + 1;
