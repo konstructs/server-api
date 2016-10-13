@@ -1,5 +1,7 @@
 package konstructs.api;
 
+import java.util.concurrent.ThreadLocalRandom;
+
 /**
  * Direction is a class representing one of the 6 possible directions a block can be placed in.
  * This can most easily be understood by imagining the block to be a die. The direction is
@@ -102,6 +104,14 @@ public class Direction {
         } else {
             throw new IllegalArgumentException("Not a directional vector" + vector);
         }
+    }
+
+    /**
+     * Returns an evenly distributed random direction
+     * @return The random direction selected
+     */
+    public static Direction getRandom() {
+        return get(ThreadLocalRandom.current().nextInt(6));
     }
 
     private final int encoding;
