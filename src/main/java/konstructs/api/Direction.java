@@ -136,11 +136,11 @@ public class Direction {
         switch(encoding) {
             case UP_ENCODING:
             case RIGHT_ENCODING:
-            case FORWARD_ENCODING:
+            case BACKWARD_ENCODING:
                 return true;
             case DOWN_ENCODING:
             case LEFT_ENCODING:
-            case BACKWARD_ENCODING:
+            case FORWARD_ENCODING:
                 return false;
             default:
                 throw new IllegalStateException("No such direction");
