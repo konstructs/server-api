@@ -18,6 +18,8 @@ import java.io.Serializable;
  */
 public final class BlockTypeId implements Serializable {
     public final static BlockTypeId VACUUM = new BlockTypeId("org/konstructs", "vacuum");
+    public final static BlockTypeId SELF = new BlockTypeId("org/konstructs", "self");
+
 
     /**
      * Create a new immutable BlockTypeId from a name string. A name
