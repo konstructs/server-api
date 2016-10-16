@@ -2,8 +2,10 @@ package konstructs.utils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Random;
 import java.util.Stack;
 
+import konstructs.api.Direction;
 import konstructs.api.Matrix;
 import konstructs.api.Position;
 import konstructs.api.BlockTypeId;
@@ -49,6 +51,41 @@ import konstructs.api.BlockTypeId;
  *     <li>
  *         <code>]</code> recalls the current position and direction from a stack.
  *     </li>
+ *     <li>
+ *         <code>&curren;</code> increases the radius of the cube built with 1.
+ *     </li>
+ *     <li>
+ *         <code>#</code> decreases the radius of the cube built with 1.
+ *     </li>
+ *     <li>
+ *         <code>&sect;</code> increases the step taken by 1.
+ *     </li>
+ *     <li>
+ *         <code>!</code> decreases the step taken by 1.
+ *     </li>
+ *     <li>
+ *         <code>&lt;</code> increases the radius by 1 and set the step so that the cubes built are
+ *         directly adjacent to each other (2 * radius + 1).
+ *     </li>
+ *     <li>
+ *         <code>&gt;</code> decreases the radius by 1 and set the step so that the cubes built are
+ *         directly adjacent to each other (2 * radius + 1)
+ *     </li>
+ *     <li>
+ *         <code>*</code> use a spherical shaped brush
+ *     </li>
+ *     <li>
+ *         <code>#</code> use a cube shaped brush (default)
+ *     </li>
+ *     <li>
+ *         <code>½</code> let randomly one in ten blocks of outer layer of the brush fail (imperfect drawing)
+ *     </li>
+ *     <li>
+ *         <code>1</code> all blocks of the brush are perfectly drawn
+ *     </li>
+ *     <li>
+ *         <code>_</code> move forward by step without applying the brush
+ *     </li>
  * </ul>
  * <p>
  * These commands changes the BlockMachines direction relative to the current direction. Just like if you
@@ -92,12 +129,41 @@ import konstructs.api.BlockTypeId;
  */
 public final class BlockMachine {
     /**
+     * Spherical brush
+     */
+    public static final int SPHERE = 1;
+    /**
+     * Cube brush
+     */
+    public static final int CUBE = 0;
+    /**
      * Direction upwards, this is the default direction.
      */
     public static final Matrix UPWARDS =
             new Matrix(0,  1,  0,
                        1,  0,  0,
                        0,  0,  1);
+    public static final Matrix DOWNWARDS =
+            new Matrix( 0,  1,  0,
+                       -1,  0,  0,
+                        0,  0,  -1);
+    public static final Matrix FORWARDS =
+            new Matrix( 0,  1,  0,
+                        0,  0, -1,
+                       -1,  0,  0);
+    public static final Matrix BACKWARDS =
+            new Matrix( 0,  1,  0,
+                        0,  0,  1,
+                        1,  0,  0);
+    public static final Matrix RIGHTWARDS =
+            new Matrix( 1,  0,  0,
+                        0,  1,  0,
+                        0,  0,  1);
+    public static final Matrix LEFTWARDS =
+            new Matrix(-1,  0,  0,
+                        0, -1,  0,
+                        0,  0,  1);
+
     private static final Matrix LEFT =
             new Matrix(0,  1,  0,
                        -1, 0,  0,
@@ -122,6 +188,26 @@ public final class BlockMachine {
             new Matrix(1,  0,  0,
                        0,  0,  1,
                        0, -1,  0);
+
+    private static Matrix getDirectionMatrix(Direction direction) {
+        switch(direction.getEncoding()) {
+            case Direction.UP_ENCODING:
+                return UPWARDS;
+            case Direction.DOWN_ENCODING:
+                return DOWNWARDS;
+            case Direction.RIGHT_ENCODING:
+                return RIGHTWARDS;
+            case Direction.LEFT_ENCODING:
+                return LEFTWARDS;
+            case Direction.FORWARD_ENCODING:
+                return FORWARDS;
+            case Direction.BACKWARD_ENCODING:
+                return BACKWARDS;
+            default:
+                throw new IllegalArgumentException("No direction encoded by: " + direction.getEncoding());
+        }
+    }
+
     /**
      * BlockMachine that Uses vacuum for all blocks in the alphabet. Useful to remove a previously
      * placed program by using the same program with this block machine.
@@ -151,27 +237,116 @@ public final class BlockMachine {
         this.overwrite = false;
     }
 
-    private static class PosDir {
+    private static class StackData {
         final Position position;
         final Matrix direction;
+        final int radius;
+        final int step;
+        final int brush;
+        final int imperfection;
 
-        public PosDir(Position position, Matrix direction) {
+        public StackData(Position position, Matrix direction, int radius, int step, int brush, int imperfection) {
             this.position = position;
             this.direction = direction;
+            this.radius = radius;
+            this.step = step;
+            this.brush = brush;
+            this.imperfection = imperfection;
         }
     }
 
+    /**
+     * Interpret a program and generate a Position to BlockTypeId map
+     * based on the alphabet of this block machine.
+     * @param program The program to be intepreted
+     * @param initPos The starting position for the program
+     * @return The result of the program as a Position to BlockTypeId map
+     */
     public Map<Position, BlockTypeId> interpret(String program, Position initPos) {
-        return interpret(program, initPos, UPWARDS);
+        return interpret(program, initPos, Direction.UP);
     }
 
-    public Map<Position, BlockTypeId> interpret(String program, Position initPos, Matrix initDir) {
+    /**
+     * Interpret a program and generate a Position to BlockTypeId map
+     * based on the alphabet of this block machine.
+     * @param program The program to be intepreted
+     * @param initPos The starting position for the program
+     * @param initDir The starting direction of the program execution
+     * @return The result of the program as a Position to BlockTypeId map
+     */
+    public Map<Position, BlockTypeId> interpret(String program, Position initPos, Direction initDir) {
+        return interpret(program, initPos, initDir, 0);
+    }
 
-        Stack<PosDir> stack = new Stack<>();
+    /**
+     * Interpret a program and generate a Position to BlockTypeId map
+     * based on the alphabet of this block machine.
+     * @param program The program to be intepreted
+     * @param initPos The starting position for the program
+     * @param initDir The starting direction of the program execution
+     * @param initRadius The initial (and minimum) radius of the brush
+     * @return The result of the program as a Position to BlockTypeId map
+     */
+    public Map<Position, BlockTypeId> interpret(String program, Position initPos, Direction initDir, int initRadius) {
+        return interpret(program, initPos, initDir, initRadius, initRadius * 2 + 1);
+    }
+
+    /**
+     * Interpret a program and generate a Position to BlockTypeId map
+     * based on the alphabet of this block machine.
+     * @param program The program to be intepreted
+     * @param initPos The starting position for the program
+     * @param initDir The starting direction of the program execution
+     * @param initRadius The initial (and minimum) radius of the brush
+     * @param initStep The initial (and minimal) stepping distance between block placements
+     * @return The result of the program as a Position to BlockTypeId map
+     */
+    public Map<Position, BlockTypeId> interpret(String program, Position initPos, Direction initDir, int initRadius,
+                                                int initStep) {
+        return interpret(program, initPos, initDir, initRadius, initStep, CUBE);
+    }
+
+    /**
+     * Interpret a program and generate a Position to BlockTypeId map
+     * based on the alphabet of this block machine.
+     * @param program The program to be intepreted
+     * @param initPos The starting position for the program
+     * @param initDir The starting direction of the program execution
+     * @param initRadius The initial (and minimum) radius of the brush
+     * @param initStep The initial (and minimal) stepping distance between block placements
+     * @param initBrush The initial brush to use {@link #CUBE} or {@link #SPHERE}
+     * @return The result of the program as a Position to BlockTypeId map
+     */
+    public Map<Position, BlockTypeId> interpret(String program, Position initPos, Direction initDir, int initRadius,
+                                                int initStep, int initBrush) {
+        return interpret(program, initPos, initDir, initRadius, initStep, initBrush, 10);
+    }
+
+    /**
+     * Interpret a program and generate a Position to BlockTypeId map
+     * based on the alphabet of this block machine.
+     * @param program The program to be intepreted
+     * @param initPos The starting position for the program
+     * @param initDir The starting direction of the program execution
+     * @param initRadius The initial (and minimum) radius of the brush
+     * @param initStep The initial (and minimal) stepping distance between block placements
+     * @param initBrush The initial brush to use {@link #CUBE} or {@link #SPHERE}
+     * @param imperfectionFactor The imperfection to be applied. One block per number given here is
+     *                           randomly selected to be excluded from the brush's outer layers
+     * @return The result of the program as a Position to BlockTypeId map
+     */
+    public Map<Position, BlockTypeId> interpret(String program, Position initPos, Direction initDir, int initRadius,
+                                                int initStep, int initBrush, int imperfectionFactor) {
+        Random random = new Random();
+        Stack<StackData> stack = new Stack<>();
         Map<Position, BlockTypeId> blocks = new HashMap<>();
 
         Position pos = initPos;
-        Matrix dir = initDir;
+        Matrix dir = getDirectionMatrix(initDir);
+        int radius = initRadius;
+        int step = initStep;
+        int brush = initBrush;
+        int imperfection = 0;
 
         final int len = program.length();
         for (int i = 0; i < len; i++) {
@@ -196,21 +371,83 @@ public final class BlockMachine {
                     dir = dir.multiply(ROLL_RIGHT);
                     break;
                 case '[':
-                    stack.push(new PosDir(pos, dir));
+                    stack.push(new StackData(pos, dir, radius, step, brush, imperfection));
                     break;
                 case ']':
-                    PosDir old = stack.pop();
+                    StackData old = stack.pop();
                     pos = old.position;
                     dir = old.direction;
+                    radius = old.radius;
+                    step = old.step;
+                    brush = old.brush;
+                    imperfection = old.imperfection;
+                    break;
+                case '¤':
+                    radius = radius + 1;
+                    break;
+                case '%':
+                    radius = radius - 1;
+                    if(radius < initRadius) radius = initRadius;
+                    break;
+                case '§':
+                    step = step + 1;
+                    break;
+                case '!':
+                    step = step - 1;
+                    if(step < initStep) step = initStep;
+                    break;
+                case '<':
+                    radius = radius + 1;
+                    step = radius * 2 + 1;
+                    break;
+                case '>':
+                    radius = radius - 1;
+                    if(radius < initRadius) radius = initRadius;
+                    step = radius * 2 + 1;
+                    break;
+                case '*':
+                    brush = SPHERE;
+                    break;
+                case '#':
+                    brush = CUBE;
+                    break;
+                case '½':
+                    imperfection = imperfectionFactor;
+                    break;
+                case '1':
+                    imperfection = 0;
+                    break;
+                case '_':
+                    pos = pos.add(dir.getAdg().multiply(step));
                     break;
                 default:
                     if(overwrite || !blocks.containsKey(pos)) {
                         BlockTypeId type = alphabet.get(c);
                         if(type == null)
                             type = BlockTypeId.VACUUM;
-                        blocks.put(pos, type);
+                        for (int x = -radius; x <= radius; x++) {
+                            for (int y = -radius; y <= radius; y++) {
+                                for (int z = -radius; z <= radius; z++) {
+                                    if (brush == SPHERE) {
+                                        double r = Math.sqrt(x * x + y * y + z * z + 1);
+                                        if (r > (double) radius)
+                                            continue;
+                                        if (imperfection != 0 && r > radius - 1 && random.nextInt(imperfection) == 0)
+                                            continue;
+                                    } else {
+                                        if (imperfection != 0
+                                                && (x >= radius - 1 || y >= radius - 1 || z >= radius - 1
+                                                || x <= -radius + 1 || y <= -radius + 1 || z <= -radius + 1)
+                                                && random.nextInt(imperfection) == 0)
+                                            continue;
+                                    }
+                                    Position offset = new Position(x, y, z);
+                                    blocks.put(pos.add(offset), type);
+                                }
+                            }
+                        }
                     }
-                    pos = pos.add(dir.getAdg());
+                    pos = pos.add(dir.getAdg().multiply(step));
                     break;
             }
         }

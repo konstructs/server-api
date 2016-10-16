@@ -137,7 +137,7 @@ public class BlockFilterFactory {
      * @param classes The classes to be matched
      * @return The new BlockFilter with the classes property set
      */
-    public BlockFilterNode withClasses(BlockClassId[] classes) {
+    public static BlockFilterNode withClasses(BlockClassId[] classes) {
         return EMPTY.withClasses(classes);
     }
 
@@ -146,7 +146,8 @@ public class BlockFilterFactory {
      * @param clazz The class to be matched
      * @return The new BlockFilter with the classes property set
      */
-    public BlockFilterNode withClass(BlockClassId clazz) {
-        return EMPTY.withClassAdded(clazz);
+    public static BlockFilterNode withClass(BlockClassId clazz) {
+        BlockClassId[] noClasses = {};
+        return EMPTY.withClasses(noClasses).withClassAdded(clazz);
     }
 }
