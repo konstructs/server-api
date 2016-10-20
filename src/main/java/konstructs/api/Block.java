@@ -79,6 +79,17 @@ public final class Block {
         return new Block(id, type);
     }
 
+    private Block() {
+        /*
+        * This constructor is used by JSON loader, set defaults for fields
+        * that requires backwards compatibility.
+        */
+        this.id = null;
+        this.type = null;
+        this.health = Health.PRISTINE;
+        this.orientation = Orientation.NORMAL;
+    }
+
     /**
      * Constructs a immutable Block in {@link Health#PRISTINE pristine} condition and
      * normal rotation.
@@ -147,8 +158,6 @@ public final class Block {
      * @return The health level of this block
      */
     public Health getHealth() {
-        /* This makes sure that old blocks loaded from JSON still works */
-        if(health == null) return Health.PRISTINE;
         return health;
     }
 
@@ -157,8 +166,6 @@ public final class Block {
      * @return The orientation of this block
      */
     public Orientation getOrientation() {
-        /* This makes sure that old blocks loaded from JSON still works */
-        if(orientation == null) return Orientation.NORMAL;
         return orientation;
     }
 
