@@ -157,6 +157,8 @@ public final class Block {
      * @return The orientation of this block
      */
     public Orientation getOrientation() {
+        /* This makes sure that old blocks loaded from JSON still works */
+        if(orientation == null) return Orientation.NORMAL;
         return orientation;
     }
 
