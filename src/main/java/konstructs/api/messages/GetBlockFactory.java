@@ -6,7 +6,7 @@ package konstructs.api.messages;
  */
 public class GetBlockFactory {
     /**
-     * This singletone represents the message and should be sent to universe to get
+     * This singleton represents the message and should be sent to universe to get
      * the BlockFactory sent back as a message.
      */
     public final static GetBlockFactory MESSAGE = new GetBlockFactory();
