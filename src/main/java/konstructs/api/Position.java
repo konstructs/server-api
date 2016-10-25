@@ -19,6 +19,9 @@ public final class Position {
     public final static Position LEFT = new Position(-1, 0, 0);
     public final static Position FORWARD = new Position(0, 0, -1);
     public final static Position BACKWARD = new Position(0, 0, 1);
+    public final static Position[] ADJACENT = {
+      UP, DOWN, RIGHT, LEFT, FORWARD, BACKWARD
+    };
 
     private final int x;
     private final int y;
@@ -180,6 +183,20 @@ public final class Position {
      */
     public int getZ() {
         return z;
+    }
+
+    /**
+     * Get positions of all adjacent blocks
+     * @return Array with all adjacent positions
+     */
+    public Position[] getAdjacent() {
+        Position[] adjacent = new Position[6];
+
+        for(int i = 0; i < 6; i++) {
+            adjacent[i] = add(ADJACENT[i]);
+        }
+
+        return adjacent;
     }
 
     @Override
