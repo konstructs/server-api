@@ -54,6 +54,12 @@ public class Colour implements Serializable {
         return COLOURS[red*CHANNEL_COLOURS*CHANNEL_COLOURS + green*CHANNEL_COLOURS + blue];
     }
 
+    /**
+     * Return a colour that matches a hex string of either 3 or 6 character.
+     * Examples: 999 (3 digit Gray), FF0000 (6 digit Red)
+     * @param hex A hex string that represnt s a colour
+     * @return The colour singleton that represents the hex string
+     */
     public static Colour fromRgbHexString(String hex) {
         int r, g, b;
         if(hex.length() == 3) {

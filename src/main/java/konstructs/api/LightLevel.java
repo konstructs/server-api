@@ -36,6 +36,11 @@ public class LightLevel {
     public static final LightLevel FOURTEEN = new LightLevel(FOURTEEN_ENCODING);
     public static final LightLevel FULL = new LightLevel(FULL_ENCODING);
 
+    /**
+     * Get a light level object represented by an int (0 - 15)
+     * @param level The intlight level
+     * @return The light level that represents the in
+     */
     public static LightLevel get(int level) {
         switch(level) {
             case DARK_ENCODING:
@@ -81,18 +86,34 @@ public class LightLevel {
         this.level = level;
     }
 
+    /**
+     * Returns the light level as an int (0 - 15)
+     * @return light level as int
+     */
     public int getLevel() {
         return level;
     }
 
+    /**
+     * Return true if there exists a higher light level
+     * @return True if there exists a higher light level
+     */
     public boolean canIncrease() {
         return level != FULL_ENCODING;
     }
 
+    /**
+     * Returns true if there exists a lower light level
+     * @return True if there exists a lower light level
+     */
     public boolean canDecrease() {
         return level != DARK_ENCODING;
     }
 
+    /**
+     * Returns a darker light level if possible
+     * @return A darker light level
+     */
     public LightLevel decrease() {
         if(level == DARK_ENCODING) {
             return this;
@@ -101,6 +122,10 @@ public class LightLevel {
         }
     }
 
+    /**
+     * Returns a lighter light level if possible
+     * @return A lighter light level
+     */
     public LightLevel increase() {
         if(level == FULL_ENCODING) {
             return this;
