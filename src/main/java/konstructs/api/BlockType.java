@@ -70,6 +70,8 @@ public final class BlockType implements Serializable {
     private final Map<BlockOrClassId, Float> damageMultipliers;
     private final boolean orientable;
     private final BlockTypeId destroyedAs;
+    private final Colour lightColour;
+    private final LightLevel lightLevel;
 
     /**
      * Constructs an immutable BlockType.
@@ -194,6 +196,10 @@ public final class BlockType implements Serializable {
      * @see #getState()
      */
     public BlockType(int[] faces, BlockShape blockShape, boolean obstacle, boolean transparent, BlockState blockState, BlockClassId[] classes, float durability, float damage, Map<BlockOrClassId, Float> damageMultipliers, boolean orientable, BlockTypeId destroyedAs) {
+        this(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs, Colour.BLACK, LightLevel.DARK);
+    }
+
+    public BlockType(int[] faces, BlockShape blockShape, boolean obstacle, boolean transparent, BlockState blockState, BlockClassId[] classes, float durability, float damage, Map<BlockOrClassId, Float> damageMultipliers, boolean orientable, BlockTypeId destroyedAs, Colour lightColour, LightLevel lightLevel) {
         this.faces = faces;
         this.blockShape = blockShape;
         this.obstacle = obstacle;
@@ -205,6 +211,8 @@ public final class BlockType implements Serializable {
         this.damageMultipliers = damageMultipliers;
         this.orientable = orientable;
         this.destroyedAs = destroyedAs;
+        this.lightColour = lightColour;
+        this.lightLevel = lightLevel;
     }
 
     /**
@@ -368,6 +376,22 @@ public final class BlockType implements Serializable {
     }
 
     /**
+     * Returns the colour of the light emitted by this type
+     * @return The colour of the light emitted
+     */
+    public Colour getLightColour() {
+        return lightColour;
+    }
+
+    /**
+     * Returns the level of light emitted by this type
+     * @return The level of light emitted
+     */
+    public LightLevel getLightLevel() {
+        return lightLevel;
+    }
+
+    /**
      * Returns the damage multiplier for this block type if used on a given block type
      * If there exists a multiplier for the specific block type ID given, it will be used.
      * Otherwise the class with the highest matching multiplier will be used.
@@ -438,7 +462,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withFaces(int[] faces) {
-        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs);
+        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs, lightColour, lightLevel);
     }
 
     /**
@@ -451,7 +475,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withShape(String shape) {
-        return new BlockType(faces, BlockShape.fromString(shape), obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs);
+        return new BlockType(faces, BlockShape.fromString(shape), obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs, lightColour, lightLevel);
     }
 
     /**
@@ -464,7 +488,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withBlockShape(BlockShape shape) {
-        return new BlockType(faces, shape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs);
+        return new BlockType(faces, shape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs, lightColour, lightLevel);
     }
 
     /**
@@ -477,7 +501,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withObstacle(boolean obstacle) {
-        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs);
+        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs, lightColour, lightLevel);
     }
 
     /**
@@ -490,7 +514,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withTransparent(boolean transparent) {
-        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs);
+        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs, lightColour, lightLevel);
     }
 
     /**
@@ -503,7 +527,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withState(String state) {
-        return new BlockType(faces, blockShape, obstacle, transparent, BlockState.fromString(state), classes, durability, damage, damageMultipliers, orientable, destroyedAs);
+        return new BlockType(faces, blockShape, obstacle, transparent, BlockState.fromString(state), classes, durability, damage, damageMultipliers, orientable, destroyedAs, lightColour, lightLevel);
     }
 
     /**
@@ -516,7 +540,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withBlockState(BlockState state) {
-        return new BlockType(faces, blockShape, obstacle, transparent, state, classes, durability, damage, damageMultipliers, orientable, destroyedAs);
+        return new BlockType(faces, blockShape, obstacle, transparent, state, classes, durability, damage, damageMultipliers, orientable, destroyedAs, lightColour, lightLevel);
     }
 
     /**
@@ -529,7 +553,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withClasses(BlockClassId[] classes) {
-        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs);
+        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs, lightColour, lightLevel);
     }
 
     /**
@@ -541,7 +565,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withDurability(float durability) {
-        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs);
+        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs, lightColour, lightLevel);
     }
 
     /**
@@ -553,7 +577,7 @@ public final class BlockType implements Serializable {
      */
     @Deprecated
     public BlockType withDamage(float damage) {
-        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs);
+        return new BlockType(faces, blockShape, obstacle, transparent, blockState, classes, durability, damage, damageMultipliers, orientable, destroyedAs, lightColour, lightLevel);
     }
 
     @Override
@@ -574,7 +598,9 @@ public final class BlockType implements Serializable {
         // Probably incorrect - comparing Object[] arrays with Arrays.equals
         if (!Arrays.equals(classes, blockType.classes)) return false;
         if (!damageMultipliers.equals(blockType.damageMultipliers)) return false;
-        return destroyedAs.equals(blockType.destroyedAs);
+        if (!destroyedAs.equals(blockType.destroyedAs)) return false;
+        if (!lightColour.equals(blockType.lightColour)) return false;
+        return lightLevel.equals(blockType.lightLevel);
 
     }
 
@@ -591,6 +617,8 @@ public final class BlockType implements Serializable {
         result = 31 * result + damageMultipliers.hashCode();
         result = 31 * result + (orientable ? 1 : 0);
         result = 31 * result + destroyedAs.hashCode();
+        result = 31 * result + lightColour.hashCode();
+        result = 31 * result + lightLevel.hashCode();
         return result;
     }
 
@@ -608,6 +636,9 @@ public final class BlockType implements Serializable {
                 ", damageMultipliers=" + damageMultipliers +
                 ", orientable=" + orientable +
                 ", destroyedAs=" + destroyedAs +
+                ", lightColour=" + lightColour +
+                ", lightLevel=" + lightLevel +
                 ')';
     }
+
 }
