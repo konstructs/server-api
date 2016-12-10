@@ -20,7 +20,8 @@ deploy:
   provider: releases
   api_key:
     secure: jdTV5LRRsrWZkotQ5uIbfVTgxNP1fy97WVgZxXA9I0o6ZmpXrNdEVXC0hJGnPKSfxevWK25FKGDb8/ep8yRtD83EnXM6puvXXAIPM9mpprNLqML0/oEAHMkzApcx0Ua6pQ0417ym+AYyRVc7qkgZCIz/KbOLiVFTecBG8ltCDhe2cTvqBk7LcPU+muLOKUA+T10SnpUtbW5SLtaE2Dt46wnn4FD+ABI/khXc2PtVNhBFkCaWii38Yam1cEXOgyGRW0VWWccIT9PNXRc9kAO74sZQ9Jc6hkrfan7DQnciCzyxBgsAsoi0jTzWBGv+XY/d4vP2JUH+U+AljVQ5FrPXeY4KsU1WmCbXqwvrR+VDnPAu4F/EMxLpZZYZzQWfQMD+3bJowLPXRiN3Nh3Ywq+uZhTWk5+6Mui/qxox+QiF+i/1fczISAPqxuM8OpEfcSaiBSLHSfaeU5gyF/s9rHZMVkoLDgttEi7xOxXCOARzh4ph/VYcVQTX56Zb6GbpVv+PszRYd2SPMTPmfVqE1ReDFSnqVfYydwqGoVCue1J3xLdkhrihflXGaqXLzklplNLg8+VXCIHyGZYbwiIU3PFhMWyX7TumdFKTdsbzaj4UhiWOGCEkBnutL16EwZyQ5LGhFpbEpNb6WQOOgZ7W41YwDGx8g7JEHcAMsql6sc/qivU=
-  file: target/konstructs-server-api-*.jar
+  file_glob: true
+  file: "target/konstructs-server-api-*.jar"
   on:
     repo: konstructs/server-api
     tags: true
