@@ -18,7 +18,7 @@ javacOptions in (Compile, compile) ++= Seq( "-Xlint:deprecation", "-Xlint:unchec
 
 libraryDependencies ++= Seq(
   "com.typesafe.akka"      %% "akka-actor"    % akkaVersion,
-  "com.google.code.gson"   %  "gson"          % "2.6.2",
+  "com.google.code.gson"   %  "gson"          % "2.8.0",
   "org.scalatest"          %% "scalatest"     % "3.0.1"  % "test"
 )
 
