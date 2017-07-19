@@ -97,12 +97,21 @@ public class InteractTertiary {
     }
 
     /**
-     * Returns if this message was sent in the world interaction or held block phase
+     * Returns true if this message was sent in the world interaction phase
      * @return True if this message was sent in the world interaction phase or else false
      * @see InteractTertiary
      */
     public boolean isWorldPhase() {
         return worldPhase;
+    }
+
+    /**
+     * Returns true if this message was sent in the held block phase
+     * @return True if this message was sent in the held block phase or else false
+     * @see InteractTertiary
+     */
+    public boolean isHeldBlockPhase() {
+        return !worldPhase;
     }
 
     /**
