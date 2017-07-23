@@ -45,6 +45,57 @@ public final class View {
     }
 
     /**
+     * Add a block to this View
+     * Returns a new view to which the block has been added
+     * @param inventoryView The InventoryView that defines where in the HUD
+     *                      the block should be shown as well as the dimensions
+     *                      of it (must be 1x1 here)
+     * @param block The block to show in the HUD
+     * @return A new View that shows the block at the given positios
+     * @see InventoryView
+     */
+    public View add(InventoryView inventoryView, Block block) {
+        return add(inventoryView, Stack.createFromBlock(block));
+    }
+
+    /**
+     * Add a stack to this View
+     * Returns a new view to which the stack has been added
+     * @param inventoryView The InventoryView that defines where in the HUD
+     *                      the stack should be shown as well as the dimensions
+     *                      of it (must be 1x1 here)
+     * @param stack The stack to show in the HUD
+     * @return A new View that shows the stack at the given positios
+     * @see InventoryView
+     */
+    public View add(InventoryView inventoryView, Stack stack) {
+        Stack[] stacks = {stack};
+        return add(inventoryView, stacks);
+    }
+
+    /**
+     * Add an array of stacks to this View
+     * Returns a new view to which the array stacks has been added
+     * @param inventoryView The InventoryView that defines where in the HUD
+     *                      the inventory should be shown as well as the dimensions
+     *                      of it
+     * @param stacks The array of stacks to show in the HUD
+     * @return A new View that shows the given array of stacks at the given positios
+     * @see InventoryView
+     */
+    public View add(InventoryView inventoryView, Stack[] stacks) {
+        Map<Integer, Stack> newItems = new HashMap<>(items);
+        for(int row = 0; row < inventoryView.getRows(); row++) {
+            for (int column = 0; column < inventoryView.getColumns(); column++) {
+                int r = row + inventoryView.getRowOffset();
+                int c = column + inventoryView.getColumnOffset();
+                newItems.put(r * COLUMNS + c, stacks[row * inventoryView.getColumns() + column]);
+            }
+        }
+        return new View(newItems);
+    }
+
+    /**
      * Add an inventory to this View
      * Returns a new view to which the Inventory has been added
      * @param inventoryView The InventoryView that defines where in the HUD
@@ -56,15 +107,7 @@ public final class View {
      * @see InventoryView
      */
     public View add(InventoryView inventoryView, Inventory inventory) {
-        Map<Integer, Stack> newItems = new HashMap<>(items);
-        for(int row = 0; row < inventoryView.getRows(); row++) {
-            for (int column = 0; column < inventoryView.getColumns(); column++) {
-                int r = row + inventoryView.getRowOffset();
-                int c = column + inventoryView.getColumnOffset();
-                newItems.put(r * COLUMNS + c, inventory.getStacks()[row * inventoryView.getColumns() + column]);
-            }
-        }
-        return new View(newItems);
+        return add(inventoryView, inventory.getStacks());
     }
 
     @Override

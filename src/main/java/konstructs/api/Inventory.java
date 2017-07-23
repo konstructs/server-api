@@ -38,6 +38,16 @@ public final class Inventory {
         return new Inventory(new Stack[size]);
     }
 
+    /**
+     * Factory method that creates an empty Inventory of a certain size.
+     * @param rows The number of rows
+     * @param columns The number of columns
+     * @return The new Inventory of the given size
+     */
+    public static Inventory createEmpty(int rows, int columns) {
+        return new Inventory(new Stack[rows*columns]);
+    }
+
     private final Stack[] stacks;
 
     /**
