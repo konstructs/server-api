@@ -1,7 +1,7 @@
 package konstructs.api;
 
 /**
- * This enum describes the number of blocks to take from a stack, all blocks, half of te blocks, one block
+ * This enum describes the number of blocks to take from a stack, all blocks, half of the blocks, one block
  */
 public enum StackAmount {
     /**
