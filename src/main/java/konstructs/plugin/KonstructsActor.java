@@ -55,6 +55,21 @@ public abstract class KonstructsActor extends UntypedActorWithStash {
             return;
         }
 
+        if(message instanceof InteractPrimaryFilter) {
+            onInteractPrimaryFilter((InteractPrimaryFilter)message);
+            return;
+        }
+
+        if(message instanceof InteractSecondaryFilter) {
+            onInteractSecondaryFilter((InteractSecondaryFilter)message);
+            return;
+        }
+
+        if(message instanceof InteractTertiaryFilter) {
+            onInteractTertiaryFilter((InteractTertiaryFilter)message);
+            return;
+        }
+
         unhandled(message);
     }
 
@@ -105,6 +120,36 @@ public abstract class KonstructsActor extends UntypedActorWithStash {
      */
     public void onGlobalConfig(GlobalConfig config) {
         unhandled(config);
+    }
+
+    /**
+     * This method is called every time a message is {@link InteractSecondaryFilter filtered for primary interaction}.
+     * This requires the plugin to be added to the "primary-interaction-listeners" list of "universe" in
+     * the reference.conf
+     * @param event The primary interaction filter chain
+     */
+    public void onInteractPrimaryFilter(InteractPrimaryFilter event) {
+        unhandled(event);
+    }
+
+    /**
+     * This method is called every time a message is {@link InteractSecondaryFilter filtered for secondary interaction}.
+     * This requires the plugin to be added to the "secondary-interaction-listeners" list of "universe" in
+     * the reference.conf
+     * @param event The secondary interaction filter chain
+     */
+    public void onInteractSecondaryFilter(InteractSecondaryFilter event) {
+        unhandled(event);
+    }
+
+    /**
+     * This method is called every time a message is {@link InteractTertiaryFilter filtered for tertiary interaction}.
+     * This requires the plugin to be added to the "tertiary-interaction-listeners" list of "universe" in
+     * the reference.conf
+     * @param event The tertiary interaction filter chain
+     */
+    public void onInteractTertiaryFilter(InteractTertiaryFilter event) {
+        unhandled(event);
     }
 
     /**
