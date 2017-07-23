@@ -183,8 +183,35 @@ public final class Stack {
         return new Stack(Arrays.copyOf(blocks, Math.min(n, blocks.length)));
     }
 
+    private int calculateStackAmount(StackAmount stackAmount) {
+        int n = 0;
+        switch(stackAmount) {
+            case ALL:
+                n = this.size();
+                break;
+            case HALF:
+                n = this.size() / 2;
+                break;
+            case ONE:
+                n = 1;
+                break;
+        }
+        return n;
+    }
+
     /**
-     * Returns a new stack without the first n blocks if this stack
+     * Returns a new stack with the first {@link StackAmount} blocks
+     * @param stackAmount The amount of blocks to take
+     * @return A new stack with amount first blocks of this stack
+     */
+    public Stack take(StackAmount stackAmount) {
+        int n = calculateStackAmount(stackAmount);
+        if(n == 0) return null;
+        return new Stack(Arrays.copyOf(blocks, Math.min(n, blocks.length)));
+    }
+
+    /**
+     * Returns a new stack without the first n blocks
      * @param n The number of blocks to drop
      * @return A new stack without the first n blocks of this stack
      */
@@ -194,12 +221,35 @@ public final class Stack {
     }
 
     /**
-     * Check whether this tacks can accept part of another stack.
+     * Returns a new stack without the first {@link StackAmount} blocks
+     * @param stackAmount The amount of blocks to drop
+     * @return A new stack without the first amount of blocks of this stack
+     */
+    public Stack drop(StackAmount stackAmount) {
+        int n = calculateStackAmount(stackAmount);
+        if(blocks.length <= n ) return null;
+        return new Stack(Arrays.copyOfRange(blocks, n, blocks.length));
+    }
+
+    /**
+     * Check whether this stack can accept part of another stack.
+     * @param stack The stack to check
+     * @return True if both stacks are of the same type and this
+     *         stack is not yet full
+     * @deprecated Since 0.3.0, please use {@link #canAcceptPartOf(Stack)} instead
+     */
+    @Deprecated
+    public boolean acceptsPartOf(Stack stack) {
+        return stack.getTypeId().equals(getTypeId()) && !isFull();
+    }
+
+    /**
+     * Check whether this stack can accept part of another stack.
      * @param stack The stack to check
      * @return True if both stacks are of the same type and this
      *         stack is not yet full
      */
-    public boolean acceptsPartOf(Stack stack) {
+    public boolean canAcceptPartOf(Stack stack) {
         return stack.getTypeId().equals(getTypeId()) && !isFull();
     }
 
@@ -208,8 +258,20 @@ public final class Stack {
      * @param block The block to check
      * @return True if the block is of the same type as the stack and
      *         the stack is not yet full
+     * @deprecated Since 0.3.0, please use {@link #canAccept(Block)} instead
      */
+    @Deprecated
     public boolean accepts(Block block) {
+        return block.getType().equals(getTypeId()) && !isFull();
+    }
+
+    /**
+     * Check whether this stack can accept a block
+     * @param block The block to check
+     * @return True if the block is of the same type as the stack and
+     *         the stack is not yet full
+     */
+    public boolean canAccept(Block block) {
         return block.getType().equals(getTypeId()) && !isFull();
     }
 
