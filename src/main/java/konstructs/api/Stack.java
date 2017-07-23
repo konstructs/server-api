@@ -236,7 +236,7 @@ public final class Stack {
      * @param stack The stack to check
      * @return True if both stacks are of the same type and this
      *         stack is not yet full
-     * @deprecated Since 0.3.0, please use {@link #canAcceptPartOf(Stack)} instead
+     * @deprecated Since 0.2.1, please use {@link #canAcceptPartOf(Stack)} instead
      */
     @Deprecated
     public boolean acceptsPartOf(Stack stack) {
@@ -258,7 +258,7 @@ public final class Stack {
      * @param block The block to check
      * @return True if the block is of the same type as the stack and
      *         the stack is not yet full
-     * @deprecated Since 0.3.0, please use {@link #canAccept(Block)} instead
+     * @deprecated Since 0.2.1, please use {@link #canAccept(Block)} instead
      */
     @Deprecated
     public boolean accepts(Block block) {
