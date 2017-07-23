@@ -190,7 +190,7 @@ public final class Stack {
                 n = this.size();
                 break;
             case HALF:
-                n = this.size() / 2;
+                n = Math.max(this.size() / 2, 1);
                 break;
             case ONE:
                 n = 1;
