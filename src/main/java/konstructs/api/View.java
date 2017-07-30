@@ -1,8 +1,12 @@
 package konstructs.api;
 
+import akka.actor.ActorRef;
+import konstructs.api.messages.*;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * View is a class that represents the HUD as shown to the user
@@ -29,6 +33,35 @@ public final class View {
      * the starting point to create a view.
      */
     public static final View EMPTY = new View(EMPTY_MAP);
+
+    public static boolean manageViewMessagesForInventories(Object message, UUID blockId, Map<InventoryId, InventoryView> inventoryViewMapping, ActorRef universe, ActorRef player) {
+        return manageViewMessagesForInventories(message, blockId, inventoryViewMapping, universe, player, player);
+    }
+
+
+    public static boolean manageViewMessagesForInventories(Object message, UUID blockId, Map<InventoryId, InventoryView> inventoryViewMapping, ActorRef universe, ActorRef receiveStack, ActorRef receiveViewUpdate) {
+        if(message instanceof PutViewStack) {
+            PutViewStack putViewStack = (PutViewStack)message;
+            for (Map.Entry<InventoryId, InventoryView> e : inventoryViewMapping.entrySet()) {
+                if (e.getValue().contains(putViewStack.getPosition())) {
+                    universe.tell(new PutStackIntoSlot(blockId, e.getKey(), e.getValue().translate(putViewStack.getPosition()), putViewStack.getStack()), receiveStack);
+                    universe.tell(new GetInventoriesView(blockId, inventoryViewMapping), receiveViewUpdate);
+                }
+            }
+            return true;
+        } else if (message instanceof RemoveViewStack) {
+            RemoveViewStack removeViewStack = (RemoveViewStack)message;
+            for (Map.Entry<InventoryId, InventoryView> e : inventoryViewMapping.entrySet()) {
+                if (e.getValue().contains(removeViewStack.getPosition())) {
+                    universe.tell(new RemoveStackFromSlot(blockId, e.getKey(), e.getValue().translate(removeViewStack.getPosition()), removeViewStack.getAmount()), receiveStack);
+                    universe.tell(new GetInventoriesView(blockId, inventoryViewMapping), receiveViewUpdate);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     private final Map<Integer, Stack> items;
 
     private View(Map<Integer, Stack> items) {
