@@ -34,11 +34,52 @@ public final class View {
      */
     public static final View EMPTY = new View(EMPTY_MAP);
 
+    /**
+     * Handle messages ({@link PutViewStack} or {@link RemoveViewStack}) from the player UI (HUD) using inventories
+     * managed by the server and return true if a message was handled and false if the message could not be handled.
+     *
+     * This function works exactly like
+     * {@link #manageViewMessagesForInventories(Object, UUID, Map, ActorRef, ActorRef, ActorRef)}, but with the
+     * receiveStack and receiveViewUpdate set to the player parameter.
+     * @param message The message to be managed
+     * @param blockId The blockId of the block that contains the inventories
+     * @param inventoryViewMapping A mapping between {@link InventoryId} and {@link InventoryView} used to see if the
+     *                             message can be handled
+     * @param universe An ActorRef to the unvierse actor
+     * @param player An ActorRef to the actor that will receive the {@link ReceiveStack} and {@link UpdateView} messages
+     * @return True if the message was handled, oterwise false
+     * @see #manageViewMessagesForInventories(Object, UUID, Map, ActorRef, ActorRef, ActorRef)
+     */
+
     public static boolean manageViewMessagesForInventories(Object message, UUID blockId, Map<InventoryId, InventoryView> inventoryViewMapping, ActorRef universe, ActorRef player) {
         return manageViewMessagesForInventories(message, blockId, inventoryViewMapping, universe, player, player);
     }
 
 
+    /**
+     * Handle messages ({@link PutViewStack} or {@link RemoveViewStack}) from the player UI (HUD) using inventories
+     * managed by the server and return true if a message was handled and false if the message could not be handled.
+     *
+     * This function will check the inventoryViewMapping for an {@link InventoryView} that contains the position of
+     * either the {@link PutViewStack} or {@link RemoveViewStack} message and generate a {@link PutStackIntoSlot} or
+     * {@link RemoveStackFromSlot} message correspondingly. This message will be sent to the universe parameter.
+     * It will then generate a {@link GetInventoriesView} message which will also be sent to the universe parameter.
+     * The response to the first message (a {@link ReceiveStack}) will be sent to the receiveStack parameter.
+     * The response to the second message (an {@link UpdateView}) will be sent to the receiveViewUpdate parameter.
+     * @param message The message to be managed
+     * @param blockId The blockId of the block that contains the inventories
+     * @param inventoryViewMapping A mapping between {@link InventoryId} and {@link InventoryView} used to see if the
+     *                             message can be handled
+     * @param universe An ActorRef to the unvierse actor
+     * @param receiveStack An ActorRef to the actor that will receive the {@link ReceiveStack} message
+     * @param receiveViewUpdate An ActorRef to the actor that will receive the {@link UpdateView} message
+     * @return True if the message was handled, oterwise false
+     * @see PutViewStack
+     * @see PutStackIntoSlot
+     * @see RemoveViewStack
+     * @see RemoveStackFromSlot
+     * @see #manageViewMessagesForInventories(Object, UUID, Map, ActorRef, ActorRef)
+     */
     public static boolean manageViewMessagesForInventories(Object message, UUID blockId, Map<InventoryId, InventoryView> inventoryViewMapping, ActorRef universe, ActorRef receiveStack, ActorRef receiveViewUpdate) {
         if(message instanceof PutViewStack) {
             PutViewStack putViewStack = (PutViewStack)message;

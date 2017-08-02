@@ -3,15 +3,24 @@ package konstructs.api.messages;
 import konstructs.api.View;
 
 /**
- * Created by petter on 2017-07-30.
+ * A message that updates the view connected to a player using the {@link ConnectView}. The view
+ * displayed the player will be fully replaced by the view sent in this message.
  */
 public class UpdateView {
     private final View view;
 
+    /**
+     * Create an immutable message to update the view of the player
+     * @param view The view that the player will see
+     */
     public UpdateView(View view) {
         this.view = view;
     }
 
+    /**
+     * Returns the view that the player will see
+     * @return The view that the player will see
+     */
     public View getView() {
         return view;
     }

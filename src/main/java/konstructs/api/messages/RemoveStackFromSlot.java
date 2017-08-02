@@ -6,7 +6,9 @@ import konstructs.api.StackAmount;
 import java.util.UUID;
 
 /**
- * Created by petter on 2017-07-27.
+ * A message to remove a stack from a specific inventory slot.
+ * The response is a {@link ReceiveStack} with either a stack, half stack, single block or null if the slot was empty.
+ * @see StackAmount
  */
 public class RemoveStackFromSlot {
     private final UUID blockId;
@@ -14,6 +16,13 @@ public class RemoveStackFromSlot {
     private final int slot;
     private final StackAmount amount;
 
+    /**
+     * Create an immutable message that removes a stack from an inventory slot
+     * @param blockId The block id that contains the inventory
+     * @param inventoryId The inventory id of the inventory
+     * @param slot The slot from which the stack should be removed
+     * @param amount The amount to be removed
+     */
     public RemoveStackFromSlot(UUID blockId, InventoryId inventoryId, int slot, StackAmount amount) {
         this.blockId = blockId;
         this.inventoryId = inventoryId;
@@ -21,18 +30,34 @@ public class RemoveStackFromSlot {
         this.amount = amount;
     }
 
+    /**
+     * Returns the block id that contains the inventory
+     * @return The block id that contains the inventory
+     */
     public UUID getBlockId() {
         return blockId;
     }
 
+    /**
+     * Returns the inventory id of the inventory
+     * @return The inventory id of the inventory
+     */
     public InventoryId getInventoryId() {
         return inventoryId;
     }
 
+    /**
+     * Returns the slot from which the stack should be removed
+     * @return The slot from which the stack should be removed
+     */
     public int getSlot() {
         return slot;
     }
 
+    /**
+     * Returns the amount to be removed
+     * @return The amount to be removed
+     */
     public StackAmount getAmount() {
         return amount;
     }

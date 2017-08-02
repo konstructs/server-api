@@ -5,21 +5,35 @@ import konstructs.api.InventoryId;
 import java.util.UUID;
 
 /**
- * Created by petter on 2017-07-30.
+ * Message that deletes a previously created inventory.
+ * @see CreateInventory
  */
 public class DeleteInventory {
     private final UUID blockId;
     private final InventoryId inventoryId;
 
+    /**
+     * Create an immutable message.
+     * @param blockId The id of the bock that contains the inventory
+     * @param inventoryId The id of the inventory
+     */
     public DeleteInventory(UUID blockId, InventoryId inventoryId) {
         this.blockId = blockId;
         this.inventoryId = inventoryId;
     }
 
+    /**
+     * Return the id of the block that contains the inventory.
+     * @return The id of the block that contains the inventory
+     */
     public UUID getBlockId() {
         return blockId;
     }
 
+    /**
+     * Returns the inventory id.
+     * @return The inventory id
+     */
     public InventoryId getInventoryId() {
         return inventoryId;
     }

@@ -1,9 +1,14 @@
 package konstructs.api.messages;
 
 /**
- * Created by petter on 2017-07-30.
+ * A singleton message to close an open view (HUD) session.
+ *
+ * To open a session use {@link ConnectView} message.
  */
 public class CloseView {
+    /**
+     * The singleton message.
+     */
     public static final CloseView MESSAGE = new CloseView();
     private CloseView(){
     }

@@ -72,6 +72,10 @@ public class InventoryId {
         return name;
     }
 
+    /**
+     * Return the id in its string representation "namespace / name"
+     * @return the id in its string representation "namespace / name"
+     */
     public String idString() {
         return namespace + "/" + name;
     }

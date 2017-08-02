@@ -6,27 +6,47 @@ import konstructs.api.InventoryId;
 import java.util.UUID;
 
 /**
- * Created by petter on 2017-07-27.
+ * The result of the {@link GetInventory} message.
+ *
+ * Note that inventory may be null if no inventory exists.
  */
 public class GetInventoryResult {
     private final UUID blockId;
     private final InventoryId inventoryId;
     private final Inventory inventory;
 
+    /**
+     * Create an immutable message
+     * @param blockId The id of the block where the inventory resides
+     * @param inventoryId The inventory id of the inventory
+     * @param inventory The inventory itself or null if no inventory was found
+     */
     public GetInventoryResult(UUID blockId, InventoryId inventoryId, Inventory inventory) {
         this.blockId = blockId;
         this.inventoryId = inventoryId;
         this.inventory = inventory;
     }
 
+    /**
+     * Returns the id of the block where the inventory resides
+     * @return The id of the block where the inventory resides
+     */
     public UUID getBlockId() {
         return blockId;
     }
 
+    /**
+     * Returns the inventory id of the inventory
+     * @return The inventory id of the inventory
+     */
     public InventoryId getInventoryId() {
         return inventoryId;
     }
 
+    /**
+     * Returns the inventory itself or null if no inventory was found
+     * @return The inventory itself or null if no inventory was found
+     */
     public Inventory getInventory() {
         return inventory;
     }

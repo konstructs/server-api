@@ -6,7 +6,11 @@ import konstructs.api.InventoryId;
 import java.util.UUID;
 
 /**
- * Created by petter on 2017-07-27.
+ * A message that transfers exactly an amount of a given block type from one inventory to another (or nothing at all)
+ * giving no acknowledgement on if the transfer was successful or not. Such an acknowledgment would not be useful,
+ * since when it is received it is not possible to know the state of the receiving inventory. If the blocks transferred
+ * to the receiving inventory are required, please us a {@link RemoveFromInventory} message to get them, and please
+ * note that this may not successfully return them as the state of the receiving inventory may already ahve changed.
  */
 public class TransferBetweenInventories {
     private final UUID fromBlockId;
@@ -16,6 +20,15 @@ public class TransferBetweenInventories {
     private final BlockTypeId blockTypeId;
     private final int amount;
 
+    /**
+     * Create an immutable message to transfer blocks of a given type from one inventory to another.
+     * @param fromBlockId The block id of the block that contain the inventory to transfer from
+     * @param fromInventoryId The inventory id of the inventory to transfer from
+     * @param toBlockId The block id of the block that contain the inventory to transfer to
+     * @param toInventoryId The inventory id of the inventory to transfer to
+     * @param blockTypeId The block type to transfer
+     * @param amount The amount of blocks to transfer
+     */
     public TransferBetweenInventories(UUID fromBlockId, InventoryId fromInventoryId, UUID toBlockId, InventoryId toInventoryId, BlockTypeId blockTypeId, int amount) {
         this.fromBlockId = fromBlockId;
         this.fromInventoryId = fromInventoryId;
@@ -25,26 +38,50 @@ public class TransferBetweenInventories {
         this.amount = amount;
     }
 
+    /**
+     * Returns the block id of the block that contain the inventory to transfer from
+     * @return The block id of the block that contain the inventory to transfer from
+     */
     public UUID getFromBlockId() {
         return fromBlockId;
     }
 
+    /**
+     * Returns the inventory id of the inventory to transfer from
+     * @return The inventory id of the inventory to transfer from
+     */
     public InventoryId getFromInventoryId() {
         return fromInventoryId;
     }
 
+    /**
+     * Returns the block id of the block that contain the inventory to transfer to
+     * @return The block id of the block that contain the inventory to transfer to
+     */
     public UUID getToBlockId() {
         return toBlockId;
     }
 
+    /**
+     * Returns the inventory id of the inventory to transfer to
+     * @return The inventory id of the inventory to transfer to
+     */
     public InventoryId getToInventoryId() {
         return toInventoryId;
     }
 
+    /**
+     * Returns the block type to transfer
+     * @return The block type to transfer
+     */
     public BlockTypeId getBlockTypeId() {
         return blockTypeId;
     }
 
+    /**
+     * Returns the amount of blocks to transfer
+     * @return The amount of blocks to transfer
+     */
     public int getAmount() {
         return amount;
     }
