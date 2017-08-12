@@ -142,17 +142,30 @@ public final class Inventory {
      * @param b The block to be checked
      * @return True if the block can be accepted by this inventory
      * @see #accept(Block)
+     * @deprecated Since 0.2.1, please use {@link #canAccept(Block)} instead
      */
+    @Deprecated
     public boolean accepts(Block b) {
+        return canAccept(b);
+    }
+
+    /**
+     * Check whether this Inventory can accept the given block. Accept here means if
+     * there is a stack in the inventory that can accommodate the block or if there is
+     * an empty slot into which the block can be put.
+     * @param b The block to be checked
+     * @return True if the block can be accepted by this inventory
+     * @see #accept(Block)
+     */
+    public boolean canAccept(Block b) {
         for(int i = 0; i < stacks.length; i++) {
             Stack s = stacks[i];
-            if(s == null || s.accepts(b)) {
+            if(s == null || s.canAccept(b)) {
                 return true;
             }
         }
         return false;
     }
-
     /**
      * Accept a block into this inventory
      * @param block The block to be accepted
@@ -163,7 +176,7 @@ public final class Inventory {
     public Inventory accept(Block block) {
        for (int i = 0; i < stacks.length; i++) {
            Stack s = stacks[i];
-           if (s != null && s.accepts(block)) {
+           if (s != null && s.canAccept(block)) {
                return withSlot(i, s.accept(block));
            }
        }
@@ -181,17 +194,29 @@ public final class Inventory {
      * in a stack.
      * @param stack The stack to be checked
      * @return True if this inventory can accept parts of the given stack
+     * @deprecated Since 0.2.1, please use {@link #canAcceptPartOf(Stack)} instead
      */
+    @Deprecated
     public boolean acceptsPartOf(Stack stack) {
+        return canAcceptPartOf(stack);
+    }
+
+
+    /**
+     * Check whether this inventory can accept part of (or all of) the blocks
+     * in a stack.
+     * @param stack The stack to be checked
+     * @return True if this inventory can accept parts of the given stack
+     */
+    public boolean canAcceptPartOf(Stack stack) {
         for(int i = 0; i < stacks.length; i++) {
             Stack s = stacks[i];
-            if(s == null || s.acceptsPartOf(stack)) {
+            if(s == null || s.canAcceptPartOf(stack)) {
                 return true;
             }
         }
         return false;
     }
-
     /**
      * Accept part of (or all of) the blocks in a stack.
      * @param stack The stack to be accepted
@@ -206,7 +231,7 @@ public final class Inventory {
         /* Try to distribute the stack over existing stacks */
         for (int i = 0; i < stacks.length; i++) {
             Stack s = stacks[i];
-            if (s != null && s.acceptsPartOf(left)) {
+            if (s != null && s.canAcceptPartOf(left)) {
                 AcceptResult<Stack> r = s.acceptPartOf(left);
                 if (r.getGiving() == null) {
                     return new AcceptResult<Inventory>(result.withSlot(i, r.getAccepting()), null);
