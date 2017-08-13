@@ -253,29 +253,29 @@ public final class Inventory {
     }
 
     /**
-     * Remove as many blocks of the same BlockTypeId from this inventory
-     * as the given stack contains. If this inventory does not contain enough
-     * blocks, the unmodified inventory is returned
-     * @param stack The stack of blocks that should be removed
+     * Remove a certain amount of blocks of a given type. If this inventory does not contain enough
+     * blocks, the unmodified inventory is returned.
+     * @param blockTypeId The type of block to be removed
+     * @param amount The number of blocks to remove
      * @return A new inventory with the number of blocks removed as the
      *         given stack contained or the inventory itself
      */
-    public Inventory remove(Stack stack) {
+    public Inventory drop(BlockTypeId blockTypeId, int amount) {
         Stack toRemove = null;
         Inventory result = this;
         for (int i = 0; i < stacks.length; i++) {
             Stack s = stacks[i];
-            if (s != null && s.getTypeId().equals(stack.getTypeId())) {
+            if (s != null && s.getTypeId().equals(blockTypeId)) {
                 if(toRemove == null) {
-                    toRemove = s.take(stack.size());
+                    toRemove = s.take(amount);
                     result = withSlot(i, s.drop(toRemove.size()));
                 } else {
-                    int n = stack.size() - toRemove.size();
+                    int n = amount - toRemove.size();
                     AcceptResult<Stack> r = toRemove.acceptPartOf(s.take(n));
                     result = withSlot(i, s.drop(n));
                     toRemove = r.getAccepting();
                 }
-                if(stack.equals(toRemove)) {
+                if(toRemove.size() == amount) {
                     return result;
                 }
             }
@@ -283,6 +283,35 @@ public final class Inventory {
 
         /* Not enough blocks in inventory to fully provide stack */
         return this;
+    }
+
+    /**
+     * Take an amount of blocks of the same BlockTypeId from this inventory and return as a stack. If the inventory
+     * does not contain enough blocks, null is returned
+     * @param blockTypeId The type of block to be removed
+     * @param amount The number of blocks to remove
+     * @return A stack with block of the given type with size == amount or null
+     */
+    public Stack take(BlockTypeId blockTypeId, int amount) {
+        Stack toRemove = null;
+        for (int i = 0; i < stacks.length; i++) {
+            Stack s = stacks[i];
+            if (s != null && s.getTypeId().equals(blockTypeId)) {
+                if(toRemove == null) {
+                    toRemove = s.take(amount);
+                } else {
+                    int n = amount - toRemove.size();
+                    AcceptResult<Stack> r = toRemove.acceptPartOf(s.take(n));
+                    toRemove = r.getAccepting();
+                }
+                if(toRemove.size() == amount) {
+                    return toRemove;
+                }
+            }
+        }
+
+        /* Not enough blocks in inventory to fully provide stack */
+        return null;
     }
 
     /**
