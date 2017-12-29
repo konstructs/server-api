@@ -1,8 +1,12 @@
 package konstructs.api;
 
+import akka.actor.ActorRef;
+import konstructs.api.messages.*;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * View is a class that represents the HUD as shown to the user
@@ -29,6 +33,76 @@ public final class View {
      * the starting point to create a view.
      */
     public static final View EMPTY = new View(EMPTY_MAP);
+
+    /**
+     * Handle messages ({@link PutViewStack} or {@link RemoveViewStack}) from the player UI (HUD) using inventories
+     * managed by the server and return true if a message was handled and false if the message could not be handled.
+     *
+     * This function works exactly like
+     * {@link #manageViewMessagesForInventories(Object, UUID, Map, ActorRef, ActorRef, ActorRef)}, but with the
+     * receiveStack and receiveViewUpdate set to the player parameter.
+     * @param message The message to be managed
+     * @param blockId The blockId of the block that contains the inventories
+     * @param inventoryViewMapping A mapping between {@link InventoryId} and {@link InventoryView} used to see if the
+     *                             message can be handled
+     * @param universe An ActorRef to the unvierse actor
+     * @param player An ActorRef to the actor that will receive the {@link ReceiveStack} and {@link UpdateView} messages
+     * @return True if the message was handled, oterwise false
+     * @see #manageViewMessagesForInventories(Object, UUID, Map, ActorRef, ActorRef, ActorRef)
+     */
+
+    public static boolean manageViewMessagesForInventories(Object message, UUID blockId, Map<InventoryId, InventoryView> inventoryViewMapping, ActorRef universe, ActorRef player) {
+        return manageViewMessagesForInventories(message, blockId, inventoryViewMapping, universe, player, player);
+    }
+
+
+    /**
+     * Handle messages ({@link PutViewStack} or {@link RemoveViewStack}) from the player UI (HUD) using inventories
+     * managed by the server and return true if a message was handled and false if the message could not be handled.
+     *
+     * This function will check the inventoryViewMapping for an {@link InventoryView} that contains the position of
+     * either the {@link PutViewStack} or {@link RemoveViewStack} message and generate a {@link PutStackIntoSlot} or
+     * {@link RemoveStackFromSlot} message correspondingly. This message will be sent to the universe parameter.
+     * It will then generate a {@link GetInventoriesView} message which will also be sent to the universe parameter.
+     * The response to the first message (a {@link ReceiveStack}) will be sent to the receiveStack parameter.
+     * The response to the second message (an {@link UpdateView}) will be sent to the receiveViewUpdate parameter.
+     * @param message The message to be managed
+     * @param blockId The blockId of the block that contains the inventories
+     * @param inventoryViewMapping A mapping between {@link InventoryId} and {@link InventoryView} used to see if the
+     *                             message can be handled
+     * @param universe An ActorRef to the unvierse actor
+     * @param receiveStack An ActorRef to the actor that will receive the {@link ReceiveStack} message
+     * @param receiveViewUpdate An ActorRef to the actor that will receive the {@link UpdateView} message
+     * @return True if the message was handled, oterwise false
+     * @see PutViewStack
+     * @see PutStackIntoSlot
+     * @see RemoveViewStack
+     * @see RemoveStackFromSlot
+     * @see #manageViewMessagesForInventories(Object, UUID, Map, ActorRef, ActorRef)
+     */
+    public static boolean manageViewMessagesForInventories(Object message, UUID blockId, Map<InventoryId, InventoryView> inventoryViewMapping, ActorRef universe, ActorRef receiveStack, ActorRef receiveViewUpdate) {
+        if(message instanceof PutViewStack) {
+            PutViewStack putViewStack = (PutViewStack)message;
+            for (Map.Entry<InventoryId, InventoryView> e : inventoryViewMapping.entrySet()) {
+                if (e.getValue().contains(putViewStack.getPosition())) {
+                    universe.tell(new PutStackIntoSlot(blockId, e.getKey(), e.getValue().translate(putViewStack.getPosition()), putViewStack.getStack()), receiveStack);
+                    universe.tell(new GetInventoriesView(blockId, inventoryViewMapping), receiveViewUpdate);
+                }
+            }
+            return true;
+        } else if (message instanceof RemoveViewStack) {
+            RemoveViewStack removeViewStack = (RemoveViewStack)message;
+            for (Map.Entry<InventoryId, InventoryView> e : inventoryViewMapping.entrySet()) {
+                if (e.getValue().contains(removeViewStack.getPosition())) {
+                    universe.tell(new RemoveStackFromSlot(blockId, e.getKey(), e.getValue().translate(removeViewStack.getPosition()), removeViewStack.getAmount()), receiveStack);
+                    universe.tell(new GetInventoriesView(blockId, inventoryViewMapping), receiveViewUpdate);
+                }
+            }
+            return true;
+        }
+        return false;
+    }
+
     private final Map<Integer, Stack> items;
 
     private View(Map<Integer, Stack> items) {

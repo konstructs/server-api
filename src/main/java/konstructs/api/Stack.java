@@ -277,7 +277,7 @@ public final class Stack {
 
     /**
      * Accept blocks from another stack
-     * Please first validate that the stack can be accepted using accpetsPartOf
+     * Please first validate that the stack can be accepted using canAccpetPartOf
      * @param stack The stack from which parts should be accepted
      * @return The AcceptResult that contains any part of the given stack
      * that could not be fitted within this stack as well as a new stack
@@ -285,7 +285,7 @@ public final class Stack {
      * @see AcceptResult
      */
     public AcceptResult<Stack> acceptPartOf(Stack stack) {
-        if (acceptsPartOf(stack)) {
+        if (canAcceptPartOf(stack)) {
             int r = getRoomLeft();
             Stack taken = stack.take(r);
             Block[] newBlocks = new Block[taken.size() + blocks.length];
@@ -299,12 +299,12 @@ public final class Stack {
 
     /**
      * Accept a single block
-     * Please first validate that the block can be accepted with the accepts method
+     * Please first validate that the block can be accepted with the canAccept method
      * @param block The block to be accepted
      * @return A new stack containing the given block
      */
     public Stack accept(Block block) {
-        if(accepts(block)) {
+        if(canAccept(block)) {
             Block[] newBlocks = Arrays.copyOf(blocks, blocks.length + 1);
             newBlocks[blocks.length ] = block;
             return new Stack(newBlocks);
